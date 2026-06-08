@@ -23,7 +23,6 @@ body{
     align-items:center;
     flex-direction:column;
     text-align:center;
-    position:relative;
 }
 
 .screen::before{
@@ -46,7 +45,6 @@ body{
     height:140px;
     position:relative;
     cursor:pointer;
-    transform-style:preserve-3d;
     animation: float 3s ease-in-out infinite;
 }
 
@@ -78,6 +76,7 @@ body{
     padding:50px 20px;
     max-width:900px;
     margin:auto;
+    animation: fadeIn 1s ease;
 }
 
 .counter{
@@ -96,8 +95,8 @@ body{
     background:rgba(255,255,255,0.18);
     padding:30px;
     border-radius:20px;
-    backdrop-filter: blur(10px);
     line-height:1.8;
+    backdrop-filter: blur(10px);
 }
 
 .gallery{
@@ -127,7 +126,6 @@ body{
     backdrop-filter: blur(10px);
     cursor:pointer;
     display:none;
-    box-shadow:0 10px 30px rgba(0,0,0,0.25);
 }
 
 /* ===== GAME ===== */
@@ -165,9 +163,27 @@ body{
 #quiz{
     display:none;
     margin-top:20px;
+    opacity:1;
+    transition: opacity 0.5s ease;
 }
 
-/* EXPLOSION */
+/* ANIMATIONS */
+@keyframes float{
+    0%{transform:translateY(0)}
+    50%{transform:translateY(-10px)}
+    100%{transform:translateY(0)}
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes boom{
+    0%{transform:translate(-50%,-50%) scale(0.5); opacity:1;}
+    100%{transform:translate(-50%,-60%) scale(2); opacity:0;}
+}
+
 .explosion{
     position:fixed;
     top:50%;
@@ -176,17 +192,6 @@ body{
     font-size:80px;
     animation: boom 1s ease forwards;
     pointer-events:none;
-}
-
-@keyframes boom{
-    0%{transform:translate(-50%,-50%) scale(0.5); opacity:1;}
-    100%{transform:translate(-50%,-60%) scale(2); opacity:0;}
-}
-
-@keyframes float{
-    0%{transform:translateY(0)}
-    50%{transform:translateY(-10px)}
-    100%{transform:translateY(0)}
 }
 
 </style>
@@ -204,7 +209,7 @@ body{
         </div>
     </div>
 
-    <div>Pour mon Chaton ❤️</div>
+    <p>Pour mon Chaton ❤️</p>
 </div>
 
 <!-- CONTENU -->
@@ -239,6 +244,9 @@ body{
 
 </div>
 
+<!-- BOUTON -->
+<div id="gameBtn" onclick="ouvrirJeu()">🎁 Jeu de piste</div>
+
 <!-- GAME -->
 <div id="game">
 
@@ -246,17 +254,23 @@ body{
 
     <div id="puzzle"></div>
 
-    <div id="puzzleMsg">🎉 Bravo ❤️ Puzzle terminé !</div>
+    <div id="puzzleMsg">🎉 Puzzle terminé ❤️</div>
 
     <div id="quiz">
 
         <h3>❓ Quiz souvenir</h3>
 
-        <p>Où on s’est rencontré ?</p>
-        <input id="q1">
+        <!-- STEP 1 -->
+        <div id="step1">
+            <p>Où on s’est rencontré ?</p>
+            <input id="q1">
+        </div>
 
-        <p id="q2wrap" style="display:none;">Quand premier bisou ?</p>
-        <input id="q2" style="display:none;">
+        <!-- STEP 2 -->
+        <div id="step2" style="display:none;">
+            <p>Quand premier bisou ?</p>
+            <input id="q2">
+        </div>
 
         <button onclick="checkQuiz()">Valider</button>
 
@@ -265,9 +279,6 @@ body{
     </div>
 
 </div>
-
-<!-- BOUTON -->
-<div id="gameBtn" onclick="ouvrirJeu()">🎁 Jeu de piste</div>
 
 <script>
 
@@ -285,7 +296,7 @@ function ouvrir(){
     },1000);
 }
 
-/* JEU */
+/* GAME OPEN */
 function ouvrirJeu(){
     document.getElementById("content").style.display="none";
     document.getElementById("game").style.display="block";
@@ -337,7 +348,7 @@ function selectTile(tile){
     checkPuzzle();
 }
 
-/* CHECK */
+/* PUZZLE CHECK */
 function checkPuzzle(){
 
     const tiles=document.querySelectorAll(".tile");
@@ -361,29 +372,38 @@ function checkPuzzle(){
 
         setTimeout(()=>{
             document.getElementById("quiz").style.display="block";
-            document.getElementById("q2").style.display="block";
-            document.getElementById("q2wrap").style.display="block";
         },1200);
     }
 }
 
-/* QUIZ PROGRESSIF */
+/* QUIZ PROGRESSIF PROPRE */
 function checkQuiz(){
 
     let q1=document.getElementById("q1").value.toLowerCase().trim();
     let q2=document.getElementById("q2").value.toLowerCase().trim();
 
-    if(document.getElementById("q2").style.display==="none"){
+    let step2=document.getElementById("step2");
+
+    // STEP 1
+    if(step2.style.display==="none"){
 
         if(q1.includes("parc") || q1.includes("éole") || q1.includes("eole")){
-            alert("Bonne réponse ❤️");
+
+            step2.style.display="block";
+
+            // petite transition douce
+            step2.style.opacity=0;
+            setTimeout(()=>step2.style.opacity=1,50);
+
         } else {
             alert("Pense au lieu ❤️");
         }
+
         return;
     }
 
-    if(q2.includes("17 juin") || q2.includes("17/06")){
+    // STEP 2
+    if(q2.includes("22 juin") || q2.includes("22/06")){
 
         document.getElementById("quizOk").style.display="block";
 
