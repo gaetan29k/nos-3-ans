@@ -26,7 +26,6 @@ body{
     position:relative;
 }
 
-/* léger overlay */
 .screen::before{
     content:"";
     position:absolute;
@@ -34,7 +33,6 @@ body{
     background:rgba(0,0,0,0.12);
 }
 
-/* contenu au-dessus */
 .screen > *{
     position:relative;
 }
@@ -53,7 +51,6 @@ body{
     animation: float 3s ease-in-out infinite;
 }
 
-/* base enveloppe */
 .envelope-base{
     position:absolute;
     width:100%;
@@ -63,7 +60,6 @@ body{
     box-shadow:0 15px 40px rgba(0,0,0,0.25);
 }
 
-/* flap (le couvercle) */
 .envelope-flap{
     position:absolute;
     width:100%;
@@ -75,7 +71,6 @@ body{
     border-radius:10px;
 }
 
-/* enveloppe ouverte */
 .envelope.open .envelope-flap{
     transform: rotateX(180deg);
 }
@@ -130,6 +125,36 @@ body{
     height:250px;
     object-fit:cover;
     border-radius:15px;
+}
+
+/* bouton secret */
+.secret-btn{
+    position:fixed;
+    bottom:15px;
+    right:15px;
+    opacity:0.25;
+    font-size:18px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.secret-btn:hover{
+    opacity:1;
+    transform:scale(1.1);
+}
+
+/* ========== JEUX DE PISTE ========== */
+#game{
+    display:none;
+    padding:40px;
+    text-align:center;
+}
+
+input{
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    margin-top:10px;
 }
 
 /* ========== ANIMATIONS ========== */
@@ -190,7 +215,7 @@ body{
 
 </div>
 
-<!-- CONTENU -->
+<!-- CONTENU LETTRE -->
 <div class="content" id="content">
 
     <div class="counter">
@@ -220,8 +245,36 @@ body{
         <img src="photo3.jpg">
         <img src="photo4.jpg">
     </div>
+</div>
+
+<!-- JEU DE PISTE -->
+<div id="game">
+
+    <h2>🎁 Jeu de piste</h2>
+
+    <div id="step1">
+        <p>Indice 1 :</p>
+        <p>Je suis froid et je garde les aliments ❄️</p>
+        <input id="r1" placeholder="Ta réponse">
+        <button onclick="check1()">Valider</button>
+    </div>
+
+    <div id="step2" style="display:none;">
+        <p>Indice 2 :</p>
+        <p>Je suis là où tu dors 🛏️</p>
+        <input id="r2">
+        <button onclick="check2()">Valider</button>
+    </div>
+
+    <div id="final" style="display:none;">
+        <h2>🎉 Bravo ❤️</h2>
+        <p>Ton cadeau t’attend dans l’appartement...</p>
+    </div>
 
 </div>
+
+<!-- bouton secret -->
+<div class="secret-btn" onclick="ouvrirJeu()">🎁</div>
 
 <script>
 
@@ -247,39 +300,56 @@ function ouvrir(){
     }, 1000);
 }
 
-/* ❤️ cœurs */
+function ouvrirJeu(){
+    document.getElementById("screen").style.display = "none";
+    document.getElementById("content").style.display = "none";
+    document.getElementById("game").style.display = "block";
+}
+
+/* JEU */
+function check1(){
+    let val = document.getElementById("r1").value.toLowerCase();
+    if(val.includes("frigo")){
+        document.getElementById("step1").style.display = "none";
+        document.getElementById("step2").style.display = "block";
+    } else alert("Non 😏");
+}
+
+function check2(){
+    let val = document.getElementById("r2").value.toLowerCase();
+    if(val.includes("lit")){
+        document.getElementById("step2").style.display = "none";
+        document.getElementById("final").style.display = "block";
+    } else alert("Pas encore 😏");
+}
+
+/* effets */
 function lancerCoeurs(){
     setInterval(()=>{
         const h = document.createElement("div");
         h.classList.add("heart");
         h.innerHTML = "❤️";
-
         h.style.left = Math.random()*100 + "vw";
         h.style.fontSize = (15+Math.random()*20)+"px";
         h.style.animationDuration = (4+Math.random()*3)+"s";
-
         document.body.appendChild(h);
         setTimeout(()=>h.remove(),8000);
     },300);
 }
 
-/* 🌹 pétales */
 function lancerPetales(){
     setInterval(()=>{
         const p = document.createElement("div");
         p.classList.add("petal");
         p.innerHTML = "🌹";
-
         p.style.left = Math.random()*100 + "vw";
         p.style.fontSize = (12+Math.random()*18)+"px";
         p.style.animationDuration = (5+Math.random()*4)+"s";
-
         document.body.appendChild(p);
         setTimeout(()=>p.remove(),9000);
     },250);
 }
 
-/* effets combinés */
 function lancerEffets(){
     lancerCoeurs();
     lancerPetales();
