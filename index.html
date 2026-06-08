@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos 3 ans ❤️</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg,#ff758c,#ff7eb3);
+    color:white;
+    overflow-x:hidden;
+}
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
+
+.hero-content{
+    max-width:800px;
+}
+
+h1{
+    font-size:4rem;
+    margin-bottom:20px;
+}
+
+.subtitle{
+    font-size:1.4rem;
+    margin-bottom:40px;
+}
+
+button{
+    padding:15px 35px;
+    border:none;
+    border-radius:50px;
+    font-size:1.1rem;
+    cursor:pointer;
+    background:white;
+    color:#ff4f81;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.hidden{
+    display:none;
+}
+
+.section{
+    padding:80px 20px;
+}
+
+.counter{
+    text-align:center;
+    font-size:2rem;
+    margin-bottom:50px;
+}
+
+.days{
+    font-size:4rem;
+    font-weight:bold;
+    display:block;
+    margin-top:10px;
+}
+
+.letter{
+    max-width:800px;
+    margin:auto;
+    background:rgba(255,255,255,0.15);
+    padding:40px;
+    border-radius:20px;
+    backdrop-filter:blur(8px);
+    line-height:1.8;
+    font-size:1.2rem;
+}
+
+.gallery{
+    margin-top:80px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    max-width:1200px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.gallery img{
+    width:100%;
+    height:300px;
+    object-fit:cover;
+    border-radius:20px;
+    transition:0.3s;
+}
+
+.gallery img:hover{
+    transform:scale(1.03);
+}
+
+.footer{
+    text-align:center;
+    padding:80px 20px;
+    font-size:1.5rem;
+}
+
+.heart{
+    position:fixed;
+    top:-20px;
+    animation:fall linear forwards;
+    opacity:0.7;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh);
+    }
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>❤️ Nos 3 ans ❤️</h1>
+        <p class="subtitle">
+            Un petit cadeau préparé spécialement pour toi...
+        </p>
+        <button onclick="ouvrirSite()">
+            Ouvrir mon message
+        </button>
+    </div>
+</section>
+
+<section id="contenu" class="section hidden">
+
+    <div class="counter">
+        Nous sommes ensemble depuis
+        <span class="days" id="jours"></span>
+    </div>
+
+    <div class="letter">
+        <h2>Mon amour ❤️</h2>
+
+        <br>
+
+        <p>
+            Aujourd'hui marque déjà trois années à tes côtés.
+            Trois années remplies de souvenirs, de rires,
+            de moments simples et de bonheur.
+        </p>
+
+        <br>
+
+        <p>
+            Merci pour tout ce que tu apportes dans ma vie.
+            Pour ta présence, ton sourire, ton soutien
+            et tous les moments que nous partageons.
+        </p>
+
+        <br>
+
+        <p>
+            J'ai encore tellement de souvenirs à créer avec toi,
+            tellement de voyages à faire,
+            tellement de moments à vivre ensemble.
+        </p>
+
+        <br>
+
+        <p>
+            Je t'aime ❤️
+        </p>
+    </div>
+
+    <div class="gallery">
+        <img src="https://picsum.photos/600/800?random=1">
+        <img src="https://picsum.photos/600/800?random=2">
+        <img src="https://picsum.photos/600/800?random=3">
+        <img src="https://picsum.photos/600/800?random=4">
+    </div>
+
+    <div class="footer">
+        ❤️ Et ce n'est que le début de notre histoire ❤️
+    </div>
+
+</section>
+
+<script>
+
+// Date de début de relation
+const debut = new Date("2023-06-17");
+
+function calculerJours(){
+    const aujourdhui = new Date();
+    const difference = aujourdhui - debut;
+
+    const jours = Math.floor(
+        difference / (1000 * 60 * 60 * 24)
+    );
+
+    document.getElementById("jours").innerHTML =
+        jours + " jours";
+}
+
+calculerJours();
+
+function ouvrirSite(){
+
+    document.querySelector(".hero").style.display="none";
+
+    document
+        .getElementById("contenu")
+        .classList.remove("hidden");
+
+    lancerCoeurs();
+}
+
+function lancerCoeurs(){
+
+    setInterval(() => {
+
+        const coeur = document.createElement("div");
+
+        coeur.innerHTML = "❤️";
+        coeur.classList.add("heart");
+
+        coeur.style.left =
+            Math.random() * window.innerWidth + "px";
+
+        coeur.style.fontSize =
+            (15 + Math.random()*25) + "px";
+
+        coeur.style.animationDuration =
+            (5 + Math.random()*5) + "s";
+
+        document.body.appendChild(coeur);
+
+        setTimeout(()=>{
+            coeur.remove();
+        },10000);
+
+    },400);
+}
+
+</script>
+
+</body>
+</html>
