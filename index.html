@@ -15,7 +15,7 @@ body{
     background: linear-gradient(135deg, #ff4f81, #ff8fb1);
 }
 
-/* ========== ACCUEIL ========== */
+/* ===== ENVELOPPE ===== */
 .screen{
     height:100vh;
     display:flex;
@@ -35,7 +35,6 @@ body{
 
 .screen > *{ position:relative; }
 
-/* ========== ENVELOPPE ========== */
 .envelope-container{ perspective:1000px; }
 
 .envelope{
@@ -63,14 +62,13 @@ body{
     clip-path: polygon(0 0, 50% 55%, 100% 0);
     transform-origin: top;
     transition: transform 1s ease;
-    border-radius:10px;
 }
 
 .envelope.open .envelope-flap{
     transform: rotateX(180deg);
 }
 
-/* ========== CONTENU ========== */
+/* ===== CONTENU ===== */
 .content{
     display:none;
     padding:50px 20px;
@@ -78,7 +76,7 @@ body{
     margin:auto;
 }
 
-/* LETTRE RESTAURÉE */
+/* lettre */
 .letter{
     background:rgba(255,255,255,0.18);
     padding:30px;
@@ -100,7 +98,6 @@ body{
     height:250px;
     object-fit:cover;
     border-radius:15px;
-    cursor:pointer;
 }
 
 /* bouton jeu */
@@ -118,7 +115,7 @@ body{
     display:none;
 }
 
-/* ========== PUZZLE + GAME ========== */
+/* ===== JEU ===== */
 #game{
     display:none;
     padding:60px 20px;
@@ -143,7 +140,7 @@ body{
     cursor:pointer;
 }
 
-/* animations */
+/* effets */
 @keyframes float{
     0%{transform:translateY(0)}
     50%{transform:translateY(-10px)}
@@ -189,38 +186,23 @@ body{
 
         <h2>Mon Chaton ❤️</h2>
 
-        <p>
-        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
-        nous avons construit quelque chose de précieux.
-        </p>
+        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement, nous avons construit quelque chose de précieux.</p>
 
-        <p>
-        Tu me pousses à devenir une meilleure version de moi-même,
-        et j’espère faire la même chose pour toi.
-        </p>
+        <p>Tu me pousses à devenir une meilleure version de moi-même, et j’espère faire la même chose pour toi.</p>
 
-        <p>
-        Dans les bons comme les mauvais moments, on avance ensemble.
-        </p>
+        <p>Dans les bons comme les mauvais moments, on avance ensemble.</p>
 
-        <p>
-        Tu me pousses à devenir une meilleure version de moi-même,
-        et j’espère faire la même chose pour toi dans la vie de tous les jours,
-        dans nos projets et dans les moments simples comme les moments difficiles.
-        </p>
-
-        <p>
-        Merci d’être toi ❤️
-        </p>
+        <p>Merci d’être toi ❤️</p>
 
         <p>— Doudou</p>
+
     </div>
 
     <div class="gallery">
-        <img src="photo1.jpg" onclick="zoomImage(this.src)">
-        <img src="photo2.jpg" onclick="zoomImage(this.src)">
-        <img src="photo3.jpg" onclick="zoomImage(this.src)">
-        <img src="photo4.jpg" onclick="zoomImage(this.src)">
+        <img src="photo1.jpg">
+        <img src="photo2.jpg">
+        <img src="photo3.jpg">
+        <img src="photo4.jpg">
     </div>
 
 </div>
@@ -228,12 +210,13 @@ body{
 <!-- JEU -->
 <div id="game">
 
-    <h2>🧩 Puzzle + Quiz</h2>
+    <h2>🧩 Puzzle</h2>
 
     <div id="puzzle"></div>
 
     <div id="puzzleMsg" style="display:none;">
-        🎉 Bravo ❤️
+        🎉 Bravo ❤️<br>
+        Tu as débloqué le quiz !
     </div>
 
     <div id="quiz" style="display:none; margin-top:20px;">
@@ -270,7 +253,7 @@ function ouvrir(){
     },1000);
 }
 
-/* LETTRE + JEU NAV */
+/* NAV */
 function ouvrirJeu(){
     document.getElementById("content").style.display="none";
     document.getElementById("game").style.display="block";
@@ -285,6 +268,7 @@ function initPuzzle(){
 
     let arr=[];
     for(let i=0;i<9;i++) arr.push(i);
+
     arr.sort(()=>Math.random()-0.5);
 
     arr.forEach((pos,i)=>{
@@ -333,12 +317,17 @@ function checkPuzzle(){
 
 /* QUIZ */
 function checkQuiz(){
+
     let a1=document.getElementById("q1").value.toLowerCase();
     let a2=document.getElementById("q2").value.toLowerCase();
 
-    if(a1.includes("lycée") && a2.includes("juin")){
-        document.getElementById("quizOk").style.display="block";
-        document.getElementById("gameBtn").style.display="block";
+    if(a1.includes("lycée") || a1.includes("ecole")){
+        if(a2.includes("juin")){
+            document.getElementById("quizOk").style.display="block";
+            document.getElementById("gameBtn").style.display="block";
+        } else {
+            alert("Pense au mois ❤️");
+        }
     } else {
         alert("Pas encore 😏");
     }
