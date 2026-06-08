@@ -12,10 +12,12 @@ body{
     font-family: Georgia, serif;
     color:white;
     overflow-x:hidden;
-    background:#ff4f81;
+
+    /* 🎬 effet Netflix fond sombre */
+    background: radial-gradient(circle at top, #1a1a1a, #000);
 }
 
-/* ========== ÉCRAN ENVELOPPE ========== */
+/* ========== ÉCRAN D'ACCUEIL (STYLE NETFLIX) ========== */
 .screen{
     height:100vh;
     display:flex;
@@ -24,28 +26,27 @@ body{
     flex-direction:column;
     text-align:center;
 
-    /* ✅ IMAGE SUPPRIMÉE → remplacée par dégradé */
-    background: linear-gradient(135deg, #ff4f81, #ff8fb1);
-
+    background: linear-gradient(135deg, rgba(255,79,129,0.4), rgba(0,0,0,0.8));
     position:relative;
+
+    animation: fadeIn 2s ease;
 }
 
-/* overlay propre */
+/* overlay ciné */
 .screen::before{
     content:"";
     position:absolute;
     inset:0;
-    background:rgba(0,0,0,0.35);
-    z-index:0;
+    background:rgba(0,0,0,0.55);
 }
 
-/* contenu au-dessus */
+/* contenu */
 .screen > *{
     position:relative;
     z-index:2;
 }
 
-/* enveloppe */
+/* ========== ENVELOPPE ANIMÉE ========== */
 .envelope{
     width:200px;
     height:130px;
@@ -53,14 +54,18 @@ body{
     border-radius:10px;
     position:relative;
     cursor:pointer;
-    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    box-shadow:0 20px 50px rgba(0,0,0,0.6);
+
+    /* animation */
+    animation: float 3s ease-in-out infinite, pulse 2s infinite;
     transition:0.3s;
 }
 
 .envelope:hover{
-    transform:scale(1.05);
+    transform:scale(1.1);
 }
 
+/* triangle enveloppe */
 .envelope:before{
     content:"";
     position:absolute;
@@ -73,9 +78,11 @@ body{
     border-top:70px solid #ff4f81;
 }
 
+/* texte */
 .text-start{
     margin-top:20px;
     font-size:1.3rem;
+    animation: fadeIn 3s ease;
 }
 
 /* ========== CONTENU LETTRE ========== */
@@ -84,6 +91,8 @@ body{
     padding:50px 20px;
     max-width:900px;
     margin:auto;
+
+    animation: zoomIn 1.5s ease;
 }
 
 /* compteur */
@@ -102,10 +111,10 @@ body{
 
 /* lettre */
 .letter{
-    background:rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.12);
     padding:30px;
     border-radius:20px;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
     line-height:1.8;
 }
 
@@ -132,9 +141,39 @@ body{
     animation: fall linear forwards;
 }
 
+/* ========== ANIMATIONS ========== */
+
 @keyframes fall{
     to{
         transform:translateY(110vh);
+    }
+}
+
+@keyframes float{
+    0%{ transform:translateY(0px); }
+    50%{ transform:translateY(-10px); }
+    100%{ transform:translateY(0px); }
+}
+
+@keyframes pulse{
+    0%{ box-shadow:0 20px 50px rgba(0,0,0,0.4); }
+    50%{ box-shadow:0 25px 70px rgba(255,79,129,0.4); }
+    100%{ box-shadow:0 20px 50px rgba(0,0,0,0.4); }
+}
+
+@keyframes fadeIn{
+    from{ opacity:0; }
+    to{ opacity:1; }
+}
+
+@keyframes zoomIn{
+    from{
+        opacity:0;
+        transform:scale(1.1);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
     }
 }
 
@@ -164,29 +203,19 @@ body{
     </div>
 
     <div class="letter">
-        <h2>Mon Chaton 😻❤️</h2>
+        <h2>Mon Chaton ❤️</h2>
 
-        <p>
-        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
-        nous avons construit quelque chose de précieux.
-        </p>
+        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
+        nous avons construit quelque chose de précieux.</p>
 
-        <p>
-        Tu me pousses à devenir une meilleure version de moi-même,
-        et j’espère faire la même chose pour toi.
-        </p>
+        <p>Tu me pousses à devenir une meilleure version de moi-même,
+        et j’espère faire la même chose pour toi.</p>
 
-        <p>
-        Dans les bons comme les mauvais moments, on avance ensemble.
-        </p>
+        <p>Dans les bons comme les mauvais moments, on avance ensemble.</p>
 
-        <p>
-        Merci d’être toi ❤️
-        </p>
+        <p>Merci d’être toi ❤️</p>
 
-        <p>
-        — Doudou ❤️
-        </p>
+        <p>— Gaëtan</p>
     </div>
 
     <div class="gallery">
