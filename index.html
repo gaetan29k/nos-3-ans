@@ -3,125 +3,112 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nos 3 ans ❤️</title>
+<title>Pour Laëtitia ❤️</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    font-family: 'Georgia', serif;
-    background: linear-gradient(135deg,#ff758c,#ff7eb3);
+    margin:0;
+    font-family: Georgia, serif;
+    background: linear-gradient(135deg,#ff6f91,#ff9671);
     color:white;
     overflow-x:hidden;
 }
 
-.hero{
-    min-height:100vh;
+/* ENVELOPPE */
+.screen{
+    height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
+    flex-direction:column;
     text-align:center;
-    padding:20px;
 }
 
-.hero-content{
-    max-width:800px;
-}
-
-h1{
-    font-size:4rem;
-    margin-bottom:20px;
-}
-
-.subtitle{
-    font-size:1.4rem;
-    margin-bottom:40px;
-}
-
-button{
-    padding:15px 35px;
-    border:none;
-    border-radius:50px;
-    font-size:1.1rem;
+.envelope{
+    width:200px;
+    height:130px;
+    background:#fff;
+    position:relative;
     cursor:pointer;
-    background:white;
-    color:#ff4f81;
+    border-radius:10px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
     transition:0.3s;
 }
 
-button:hover{
+.envelope:hover{
     transform:scale(1.05);
 }
 
-.hidden{
+.envelope:before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:0;
+    height:0;
+    border-left:100px solid transparent;
+    border-right:100px solid transparent;
+    border-top:70px solid #ff4f81;
+}
+
+.text-start{
+    margin-top:20px;
+    font-size:1.3rem;
+}
+
+/* CONTENU */
+.content{
     display:none;
+    padding:50px 20px;
+    max-width:900px;
+    margin:auto;
 }
 
-.section{
-    padding:80px 20px;
-}
-
+/* COMPTEUR */
 .counter{
     text-align:center;
-    font-size:2rem;
-    margin-bottom:50px;
+    font-size:1.5rem;
+    margin-bottom:40px;
 }
 
-.days{
-    font-size:4rem;
+.big{
+    font-size:3rem;
     font-weight:bold;
     display:block;
     margin-top:10px;
 }
 
+/* LETTRE */
 .letter{
-    max-width:800px;
-    margin:auto;
     background:rgba(255,255,255,0.15);
-    padding:40px;
+    padding:30px;
     border-radius:20px;
-    backdrop-filter:blur(8px);
+    backdrop-filter: blur(8px);
     line-height:1.8;
-    font-size:1.2rem;
+    font-size:1.1rem;
 }
 
+/* GALERIE */
 .gallery{
-    margin-top:80px;
+    margin-top:40px;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    max-width:1200px;
-    margin-left:auto;
-    margin-right:auto;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
 }
 
 .gallery img{
     width:100%;
-    height:300px;
+    height:250px;
     object-fit:cover;
-    border-radius:20px;
-    transition:0.3s;
+    border-radius:15px;
 }
 
-.gallery img:hover{
-    transform:scale(1.03);
-}
-
-.footer{
-    text-align:center;
-    padding:80px 20px;
-    font-size:1.5rem;
-}
-
+/* COEURS */
 .heart{
     position:fixed;
     top:-20px;
-    animation:fall linear forwards;
-    opacity:0.7;
+    font-size:20px;
+    animation: fall linear forwards;
 }
 
 @keyframes fall{
@@ -131,129 +118,100 @@ button:hover{
 }
 </style>
 </head>
+
 <body>
 
-<section class="hero">
-    <div class="hero-content">
-        <h1>❤️ Nos 3 ans ❤️</h1>
-        <p class="subtitle">
-            Un petit cadeau préparé spécialement pour toi...
-        </p>
-        <button onclick="ouvrirSite()">
-            Ouvrir mon message
-        </button>
-    </div>
-</section>
+<!-- ENVELOPPE -->
+<div class="screen" id="screen">
+    <div class="envelope" onclick="ouvrir()"></div>
+    <div class="text-start">Pour mon Chaton ❤️<br>Clique pour ouvrir</div>
+</div>
 
-<section id="contenu" class="section hidden">
+<!-- CONTENU -->
+<div class="content" id="content">
 
     <div class="counter">
-        Nous sommes ensemble depuis
-        <span class="days" id="jours"></span>
+        Ensemble depuis le 17 juin 2023
+        <span class="big" id="days"></span>
     </div>
 
     <div class="letter">
-        <h2>Mon amour ❤️</h2>
-
-        <br>
+        <h2>Mon Chaton ❤️</h2>
 
         <p>
-            Aujourd'hui marque déjà trois années à tes côtés.
-            Trois années remplies de souvenirs, de rires,
-            de moments simples et de bonheur.
+        Depuis notre rencontre le 18 mai 2023, puis ce 17 juin où tout a commencé officiellement,
+        nous avons construit quelque chose de précieux.
         </p>
 
-        <br>
-
         <p>
-            Merci pour tout ce que tu apportes dans ma vie.
-            Pour ta présence, ton sourire, ton soutien
-            et tous les moments que nous partageons.
+        Tu es celle qui me pousse à devenir une meilleure version de moi-même,
+        et j'espère faire la même chose pour toi.
         </p>
 
-        <br>
-
         <p>
-            J'ai encore tellement de souvenirs à créer avec toi,
-            tellement de voyages à faire,
-            tellement de moments à vivre ensemble.
+        Dans les bons comme les mauvais moments, on avance ensemble.
+        Et c'est ça le plus beau.
         </p>
 
-        <br>
+        <p>
+        Merci d'être toi, merci pour ton amour.
+        </p>
 
         <p>
-            Je t'aime ❤️
+        Je t'aime ❤️<br>
+        — Gaëtan
         </p>
     </div>
 
     <div class="gallery">
-        <img src="https://picsum.photos/600/800?random=1">
-        <img src="https://picsum.photos/600/800?random=2">
-        <img src="https://picsum.photos/600/800?random=3">
-        <img src="https://picsum.photos/600/800?random=4">
+        <img src="https://picsum.photos/400/600?random=1">
+        <img src="https://picsum.photos/400/600?random=2">
+        <img src="https://picsum.photos/400/600?random=3">
+        <img src="https://picsum.photos/400/600?random=4">
     </div>
 
-    <div class="footer">
-        ❤️ Et ce n'est que le début de notre histoire ❤️
-    </div>
-
-</section>
+</div>
 
 <script>
 
-// Date de début de relation
-const debut = new Date("2023-06-17");
+// date couple
+const start = new Date("2023-06-17");
 
-function calculerJours(){
-    const aujourdhui = new Date();
-    const difference = aujourdhui - debut;
+function updateDays(){
+    const now = new Date();
+    const diff = now - start;
 
-    const jours = Math.floor(
-        difference / (1000 * 60 * 60 * 24)
-    );
+    const days = Math.floor(diff / (1000*60*60*24));
 
-    document.getElementById("jours").innerHTML =
-        jours + " jours";
+    document.getElementById("days").innerText =
+        days + " jours ❤️";
 }
 
-calculerJours();
+updateDays();
 
-function ouvrirSite(){
-
-    document.querySelector(".hero").style.display="none";
-
-    document
-        .getElementById("contenu")
-        .classList.remove("hidden");
-
-    lancerCoeurs();
+// ouverture enveloppe
+function ouvrir(){
+    document.getElementById("screen").style.display = "none";
+    document.getElementById("content").style.display = "block";
+    hearts();
 }
 
-function lancerCoeurs(){
+// animation coeurs
+function hearts(){
+    setInterval(()=>{
+        const h = document.createElement("div");
+        h.classList.add("heart");
+        h.innerHTML = "❤️";
 
-    setInterval(() => {
+        h.style.left = Math.random()*100 + "vw";
+        h.style.fontSize = (15+Math.random()*20)+"px";
+        h.style.animationDuration = (4+Math.random()*3)+"s";
 
-        const coeur = document.createElement("div");
+        document.body.appendChild(h);
 
-        coeur.innerHTML = "❤️";
-        coeur.classList.add("heart");
+        setTimeout(()=>h.remove(),8000);
 
-        coeur.style.left =
-            Math.random() * window.innerWidth + "px";
-
-        coeur.style.fontSize =
-            (15 + Math.random()*25) + "px";
-
-        coeur.style.animationDuration =
-            (5 + Math.random()*5) + "s";
-
-        document.body.appendChild(coeur);
-
-        setTimeout(()=>{
-            coeur.remove();
-        },10000);
-
-    },400);
+    },300);
 }
 
 </script>
