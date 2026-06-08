@@ -15,7 +15,7 @@ body{
     overflow-x:hidden;
 }
 
-/* ENVELOPPE */
+/* ===== ENVELOPPE ===== */
 .screen{
     height:100vh;
     display:flex;
@@ -47,13 +47,14 @@ body{
     height:100%;
     background:#ff4f81;
     clip-path: polygon(0 0, 50% 55%, 100% 0);
+    transition: transform 1s;
 }
 
 .envelope.open .envelope-flap{
     transform: rotateX(180deg);
 }
 
-/* CONTENU */
+/* ===== CONTENU ===== */
 .content{
     display:none;
     padding:40px 20px;
@@ -61,18 +62,20 @@ body{
     margin:auto;
 }
 
+/* lettre */
 .letter{
     background:rgba(255,255,255,0.15);
-    padding:25px;
+    padding:30px;
     border-radius:20px;
-    line-height:1.6;
+    line-height:1.8;
 }
 
+/* galerie */
 .gallery{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
     gap:15px;
-    margin-top:20px;
+    margin-top:25px;
 }
 
 .gallery img{
@@ -82,27 +85,28 @@ body{
     border-radius:15px;
 }
 
-/* BOUTON */
+/* bouton */
 #gameBtn{
     position:fixed;
     bottom:25px;
     left:50%;
     transform:translateX(-50%);
-    padding:18px 28px;
+    padding:16px 26px;
     font-size:20px;
-    border-radius:25px;
+    border-radius:20px;
     background:rgba(255,255,255,0.3);
     cursor:pointer;
     display:none;
 }
 
-/* JEU */
+/* ===== GAME ===== */
 #game{
     display:none;
     padding:40px 20px;
     text-align:center;
 }
 
+/* PUZZLE */
 #puzzle{
     width:300px;
     height:300px;
@@ -116,17 +120,46 @@ body{
 .tile{
     width:100%;
     height:100%;
-    background-image:url("photo4.jpg"); /* 👈 TA PHOTO */
+    background-image:url("photo4.jpg");
     background-size:300px 300px;
     cursor:pointer;
 }
 
+/* MESSAGE + ANIM */
 #puzzleMsg{
+    display:none;
+    margin-top:20px;
+    animation: pop 0.6s ease;
+}
+
+/* explosion visuelle */
+.explosion{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:80px;
+    animation: boom 1s ease forwards;
+    pointer-events:none;
+}
+
+@keyframes boom{
+    0%{transform:translate(-50%,-50%) scale(0.5); opacity:1;}
+    100%{transform:translate(-50%,-60%) scale(2); opacity:0;}
+}
+
+@keyframes pop{
+    from{transform:scale(0.5); opacity:0;}
+    to{transform:scale(1); opacity:1;}
+}
+
+/* quiz */
+#quiz{
     display:none;
     margin-top:20px;
 }
 
-/* ANIM */
+/* animation */
 @keyframes float{
     0%{transform:translateY(0)}
     50%{transform:translateY(-10px)}
@@ -141,13 +174,12 @@ body{
 <!-- ENVELOPPE -->
 <div class="screen" id="screen">
 
-    <div class="envelope" onclick="ouvrir()">
+    <div class="envelope" id="envelope" onclick="openLetter()">
         <div class="envelope-flap"></div>
         <div class="envelope-base"></div>
     </div>
 
     <p>Clique pour ouvrir ❤️</p>
-
 </div>
 
 <!-- CONTENU -->
@@ -155,8 +187,17 @@ body{
 
     <div class="letter">
         <h2>Mon Chaton ❤️</h2>
-        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement...</p>
-        <p>Tu es ma plus belle histoire ❤️</p>
+
+        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
+        nous avons construit quelque chose de précieux.</p>
+
+        <p>Tu me pousses à devenir une meilleure version de moi-même,
+        et j’espère faire la même chose pour toi.</p>
+
+        <p>Dans les bons comme les mauvais moments, on avance ensemble.</p>
+
+        <p>Merci d’être toi ❤️</p>
+
         <p>— Doudou</p>
     </div>
 
@@ -169,7 +210,7 @@ body{
 
 </div>
 
-<!-- JEU -->
+<!-- GAME -->
 <div id="game">
 
     <h2>🧩 Puzzle</h2>
@@ -177,40 +218,64 @@ body{
     <div id="puzzle"></div>
 
     <div id="puzzleMsg">
-        🎉 Bravo ❤️ Tu as trouvé l’indice !
+        🎉 Bravo ❤️ Puzzle terminé !
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quiz">
+        <h3>❓ Quiz souvenir</h3>
+
+        <p>Où on s’est rencontré ?</p>
+        <input id="q1">
+
+        <p>Quand premier bisou ?</p>
+        <input id="q2">
+
+        <button onclick="checkQuiz()">Valider</button>
+
+        <div id="quizOk" style="display:none; margin-top:10px;">
+            🎁 Bien joué ❤️
+        </div>
     </div>
 
 </div>
 
 <!-- BOUTON -->
-<div id="gameBtn" onclick="ouvrirJeu()">🎁 Jeu de piste</div>
+<div id="gameBtn" onclick="openGame()">🎁 Jeu de piste</div>
+
+<!-- MUSIQUE -->
+<audio id="music" loop>
+    <source src="music.mp3" type="audio/mp3">
+</audio>
 
 <script>
 
 let selected=null;
 
-/* OUVERTURE */
-function ouvrir(){
-    document.querySelector(".envelope").classList.add("open");
+/* OPEN */
+function openLetter(){
+
+    document.getElementById("envelope").classList.add("open");
 
     setTimeout(()=>{
         document.getElementById("screen").style.display="none";
         document.getElementById("content").style.display="block";
-
         document.getElementById("gameBtn").style.display="block";
 
-        lancerPuzzle(); // ⚠️ IMPORTANT
+        document.getElementById("music").play();
+
+        initPuzzle();
     },1000);
 }
 
-/* OUVRIR JEU */
-function ouvrirJeu(){
+/* GAME */
+function openGame(){
     document.getElementById("content").style.display="none";
     document.getElementById("game").style.display="block";
 }
 
-/* PUZZLE ULTRA SIMPLE QUI MARCHE */
-function lancerPuzzle(){
+/* PUZZLE */
+function initPuzzle(){
 
     const puzzle=document.getElementById("puzzle");
     puzzle.innerHTML="";
@@ -220,22 +285,21 @@ function lancerPuzzle(){
 
     arr.forEach((pos,i)=>{
 
-        const tile=document.createElement("div");
-        tile.className="tile";
+        const t=document.createElement("div");
+        t.className="tile";
 
-        tile.style.backgroundPosition=
+        t.style.backgroundPosition=
         `${(pos%3)*-100}px ${Math.floor(pos/3)*-100}px`;
 
-        tile.dataset.correct=pos;
+        t.dataset.correct=pos;
 
-        tile.onclick=()=>select(tile);
+        t.onclick=()=>selectTile(t);
 
-        puzzle.appendChild(tile);
+        puzzle.appendChild(t);
     });
 }
 
-/* SWAP SIMPLE */
-function select(tile){
+function selectTile(tile){
 
     if(!selected){
         selected=tile;
@@ -249,12 +313,12 @@ function select(tile){
         selected.style.outline="";
         selected=null;
 
-        checkWin();
+        checkPuzzle();
     }
 }
 
-/* CHECK */
-function checkWin(){
+/* CHECK + EXPLOSION */
+function checkPuzzle(){
 
     const tiles=document.querySelectorAll(".tile");
 
@@ -266,7 +330,27 @@ function checkWin(){
 
     if(ok){
         document.getElementById("puzzleMsg").style.display="block";
+
+        // 💥 explosion
+        let boom=document.createElement("div");
+        boom.className="explosion";
+        boom.innerHTML="💖✨🎉";
+        document.body.appendChild(boom);
+        setTimeout(()=>boom.remove(),1000);
     }
+}
+
+/* QUIZ */
+function checkQuiz(){
+
+    let a1=document.getElementById("q1").value.toLowerCase();
+    let a2=document.getElementById("q2").value.toLowerCase();
+
+    if(a1.includes("lycée") || a1.includes("ecole")){
+        if(a2.includes("juin")){
+            document.getElementById("quizOk").style.display="block";
+        } else alert("Pense au mois ❤️");
+    } else alert("Pas encore 😏");
 }
 
 </script>
