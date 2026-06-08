@@ -410,19 +410,7 @@ function checkPuzzle(){
 function checkQuiz(){
     function lancerReveal(){
 
-    document.getElementById("reveal").style.display="flex";
-
-    setTimeout(()=>{
-        document.getElementById("revealPhoto").style.opacity="1";
-        document.getElementById("revealPhoto").style.transform="scale(1)";
-    },100);
-
-    setTimeout(()=>{
-        document.getElementById("revealText").style.opacity="1";
-        document.getElementById("revealText").style.transform="translateY(0)";
-    },1800);
-
-}
+    
 
     let q1=document.getElementById("q1").value.toLowerCase().trim();
     let q2=document.getElementById("q2").value.toLowerCase().trim();
@@ -459,7 +447,8 @@ function checkQuiz(){
         document.getElementById("quizOk").style.display="block";
 
         setTimeout(()=>{
-            lancerReveal();
+            lancerReveal()
+                document.getElementById("game").style.display="none";
         },1200);
 
     }else{
@@ -483,6 +472,20 @@ function updateDays(){
 }
 
 updateDays();
+    function lancerReveal(){
+
+    document.getElementById("reveal").style.display="flex";
+
+    setTimeout(()=>{
+        document.getElementById("revealPhoto").style.opacity="1";
+        document.getElementById("revealPhoto").style.transform="scale(1)";
+    },200);
+
+    setTimeout(()=>{
+        document.getElementById("revealText").style.opacity="1";
+        document.getElementById("revealText").style.transform="translateY(0)";
+    },1400);
+}
 </script>
 <!-- REVEAL FINAL -->
 <div id="reveal">
