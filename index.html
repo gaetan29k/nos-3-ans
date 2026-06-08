@@ -83,20 +83,6 @@ body{
     border-radius:15px;
 }
 
-/* ===== BOUTON ===== */
-#gameBtn{
-    position:fixed;
-    bottom:25px;
-    left:50%;
-    transform:translateX(-50%);
-    padding:16px 26px;
-    font-size:20px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.3);
-    cursor:pointer;
-    display:none;
-}
-
 /* ===== GAME ===== */
 #game{
     display:none;
@@ -104,7 +90,6 @@ body{
     text-align:center;
 }
 
-/* PUZZLE */
 #puzzle{
     width:300px;
     height:300px;
@@ -150,7 +135,6 @@ body{
     100%{transform:translate(-50%,-60%) scale(2); opacity:0;}
 }
 
-/* ANIM */
 @keyframes float{
     0%{transform:translateY(0)}
     50%{transform:translateY(-10px)}
@@ -179,13 +163,23 @@ body{
     <div class="letter">
         <h2>Mon Chaton ❤️</h2>
 
-        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement, nous avons construit quelque chose de précieux.</p>
+        <p>
+        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
+        nous avons construit quelque chose de précieux.
+        </p>
 
-        <p>Tu me pousses à devenir une meilleure version de moi-même, et j’espère faire la même chose pour toi.</p>
+        <p>
+        Tu me pousses à devenir une meilleure version de moi-même,
+        et j’espère faire la même chose pour toi.
+        </p>
 
-        <p>Dans les bons comme les mauvais moments, on avance ensemble.</p>
+        <p>
+        Dans les bons comme les mauvais moments, on avance ensemble.
+        </p>
 
-        <p>Merci d’être toi ❤️</p>
+        <p>
+        Merci d’être toi ❤️
+        </p>
 
         <p>— Doudou</p>
     </div>
@@ -211,6 +205,7 @@ body{
     </div>
 
     <div id="quiz">
+
         <h3>❓ Quiz souvenir</h3>
 
         <p>Où on s’est rencontré ?</p>
@@ -228,14 +223,11 @@ body{
 
 </div>
 
-<!-- BOUTON -->
-<div id="gameBtn" onclick="openGame()">🎁 Jeu de piste</div>
-
 <script>
 
 let selected = null;
 
-/* OPEN */
+/* OUVERTURE */
 function openLetter(){
 
     document.getElementById("envelope").classList.add("open");
@@ -243,16 +235,8 @@ function openLetter(){
     setTimeout(()=>{
         document.getElementById("screen").style.display="none";
         document.getElementById("content").style.display="block";
-        document.getElementById("gameBtn").style.display="block";
-
         initPuzzle();
     },1000);
-}
-
-/* GAME */
-function openGame(){
-    document.getElementById("content").style.display="none";
-    document.getElementById("game").style.display="block";
 }
 
 /* PUZZLE */
@@ -304,7 +288,7 @@ function selectTile(tile){
     checkPuzzle();
 }
 
-/* CHECK + ENCHAÎNEMENT */
+/* CHECK PUZZLE */
 function checkPuzzle(){
 
     const tiles = document.querySelectorAll(".tile");
@@ -319,7 +303,6 @@ function checkPuzzle(){
 
         document.getElementById("puzzleMsg").style.display="block";
 
-        // 💥 explosion
         let boom = document.createElement("div");
         boom.className="explosion";
         boom.innerHTML="💖✨🎉";
@@ -327,24 +310,40 @@ function checkPuzzle(){
 
         setTimeout(()=>boom.remove(),1000);
 
-        // ❓ quiz après puzzle
+        // 👉 affichage quiz
         setTimeout(()=>{
             document.getElementById("quiz").style.display="block";
         },1200);
     }
 }
 
-/* QUIZ */
+/* QUIZ 2 ETAPES */
 function checkQuiz(){
 
-    let a1=document.getElementById("q1").value.toLowerCase();
-    let a2=document.getElementById("q2").value.toLowerCase();
+    let q1 = document.getElementById("q1").value.toLowerCase().trim();
 
-    if(a1.includes("lycée") || a1.includes("ecole")){
-        if(a2.includes("juin")){
-            document.getElementById("quizOk").style.display="block";
-        } else alert("Pense au mois ❤️");
-    } else alert("Pas encore 😏");
+    let q2 = document.getElementById("q2").value.toLowerCase().trim();
+
+    if(document.getElementById("q2").style.display === "none"){
+
+        if(q1.includes("parc") || q1.includes("éole") || q1.includes("eole")){
+
+            document.getElementById("q2").style.display = "block";
+
+        } else {
+            alert("Pas encore 😏 pense au lieu ❤️");
+        }
+
+        return;
+    }
+
+    if(q2.includes("17 juin") || q2.includes("17/06") || q2.includes("17-06")){
+
+        document.getElementById("quizOk").style.display="block";
+
+    } else {
+        alert("Pense à la date ❤️");
+    }
 }
 
 </script>
