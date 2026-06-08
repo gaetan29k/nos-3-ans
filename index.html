@@ -12,9 +12,10 @@ body{
     font-family: Georgia, serif;
     color:white;
     overflow-x:hidden;
+    background:#ff4f81;
 }
 
-/* ÉCRAN ENVELOPPE */
+/* ========== ÉCRAN ENVELOPPE ========== */
 .screen{
     height:100vh;
     display:flex;
@@ -23,15 +24,11 @@ body{
     flex-direction:column;
     text-align:center;
 
-    background-image: url("photo5.jpg");
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-
+    background: url("photo5.jpg") center/cover no-repeat;
     position:relative;
 }
 
-/* VOILE SOMBRE */
+/* overlay propre */
 .screen::before{
     content:"";
     position:absolute;
@@ -46,14 +43,14 @@ body{
     z-index:2;
 }
 
-/* ENVELOPPE */
+/* enveloppe */
 .envelope{
     width:200px;
     height:130px;
     background:#fff;
+    border-radius:10px;
     position:relative;
     cursor:pointer;
-    border-radius:10px;
     box-shadow:0 10px 30px rgba(0,0,0,0.3);
     transition:0.3s;
 }
@@ -79,7 +76,7 @@ body{
     font-size:1.3rem;
 }
 
-/* CONTENU LETTRE */
+/* ========== CONTENU LETTRE ========== */
 .content{
     display:none;
     padding:50px 20px;
@@ -87,7 +84,7 @@ body{
     margin:auto;
 }
 
-/* COMPTEUR */
+/* compteur */
 .counter{
     text-align:center;
     font-size:1.5rem;
@@ -101,17 +98,16 @@ body{
     margin-top:10px;
 }
 
-/* LETTRE */
+/* lettre */
 .letter{
     background:rgba(255,255,255,0.15);
     padding:30px;
     border-radius:20px;
     backdrop-filter: blur(8px);
     line-height:1.8;
-    font-size:1.1rem;
 }
 
-/* GALERIE */
+/* galerie */
 .gallery{
     margin-top:40px;
     display:grid;
@@ -126,7 +122,7 @@ body{
     border-radius:15px;
 }
 
-/* COEURS */
+/* cœurs */
 .heart{
     position:fixed;
     top:-20px;
@@ -202,7 +198,6 @@ body{
 
 <script>
 
-// date relation
 const start = new Date("2023-06-17");
 
 function updateDays(){
@@ -210,21 +205,18 @@ function updateDays(){
     const diff = now - start;
     const days = Math.floor(diff / (1000*60*60*24));
 
-    document.getElementById("days").innerText =
-        days + " jours ❤️";
+    document.getElementById("days").innerText = days + " jours ❤️";
 }
 
 updateDays();
 
-// ouvrir enveloppe
 function ouvrir(){
     document.getElementById("screen").style.display = "none";
     document.getElementById("content").style.display = "block";
-    hearts();
+    lancerCoeurs();
 }
 
-// coeurs animés
-function hearts(){
+function lancerCoeurs(){
     setInterval(()=>{
         const h = document.createElement("div");
         h.classList.add("heart");
