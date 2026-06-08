@@ -62,7 +62,7 @@ body{
     margin:auto;
 }
 
-/* lettre */
+/* LETTRE */
 .letter{
     background:rgba(255,255,255,0.15);
     padding:30px;
@@ -70,7 +70,7 @@ body{
     line-height:1.8;
 }
 
-/* galerie */
+/* GALERIE */
 .gallery{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -85,7 +85,7 @@ body{
     border-radius:15px;
 }
 
-/* bouton */
+/* BOUTON */
 #gameBtn{
     position:fixed;
     bottom:25px;
@@ -125,14 +125,14 @@ body{
     cursor:pointer;
 }
 
-/* MESSAGE + ANIM */
+/* MESSAGE */
 #puzzleMsg{
     display:none;
     margin-top:20px;
     animation: pop 0.6s ease;
 }
 
-/* explosion visuelle */
+/* EXPLOSION */
 .explosion{
     position:fixed;
     top:50%;
@@ -143,6 +143,19 @@ body{
     pointer-events:none;
 }
 
+/* QUIZ */
+#quiz{
+    display:none;
+    margin-top:20px;
+}
+
+/* ANIM */
+@keyframes float{
+    0%{transform:translateY(0)}
+    50%{transform:translateY(-10px)}
+    100%{transform:translateY(0)}
+}
+
 @keyframes boom{
     0%{transform:translate(-50%,-50%) scale(0.5); opacity:1;}
     100%{transform:translate(-50%,-60%) scale(2); opacity:0;}
@@ -151,19 +164,6 @@ body{
 @keyframes pop{
     from{transform:scale(0.5); opacity:0;}
     to{transform:scale(1); opacity:1;}
-}
-
-/* quiz */
-#quiz{
-    display:none;
-    margin-top:20px;
-}
-
-/* animation */
-@keyframes float{
-    0%{transform:translateY(0)}
-    50%{transform:translateY(-10px)}
-    100%{transform:translateY(0)}
 }
 
 </style>
@@ -188,15 +188,23 @@ body{
     <div class="letter">
         <h2>Mon Chaton ❤️</h2>
 
-        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
-        nous avons construit quelque chose de précieux.</p>
+        <p>
+        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
+        nous avons construit quelque chose de précieux.
+        </p>
 
-        <p>Tu me pousses à devenir une meilleure version de moi-même,
-        et j’espère faire la même chose pour toi.</p>
+        <p>
+        Tu me pousses à devenir une meilleure version de moi-même,
+        et j’espère faire la même chose pour toi.
+        </p>
 
-        <p>Dans les bons comme les mauvais moments, on avance ensemble.</p>
+        <p>
+        Dans les bons comme les mauvais moments, on avance ensemble.
+        </p>
 
-        <p>Merci d’être toi ❤️</p>
+        <p>
+        Merci d’être toi ❤️
+        </p>
 
         <p>— Doudou</p>
     </div>
@@ -221,7 +229,6 @@ body{
         🎉 Bravo ❤️ Puzzle terminé !
     </div>
 
-    <!-- QUIZ -->
     <div id="quiz">
         <h3>❓ Quiz souvenir</h3>
 
@@ -233,7 +240,7 @@ body{
 
         <button onclick="checkQuiz()">Valider</button>
 
-        <div id="quizOk" style="display:none; margin-top:10px;">
+        <div id="quizOk" style="display:none;">
             🎁 Bien joué ❤️
         </div>
     </div>
@@ -243,16 +250,11 @@ body{
 <!-- BOUTON -->
 <div id="gameBtn" onclick="openGame()">🎁 Jeu de piste</div>
 
-<!-- MUSIQUE -->
-<audio id="music" loop>
-    <source src="music.mp3" type="audio/mp3">
-</audio>
-
 <script>
 
-let selected=null;
+let selected = null;
 
-/* OPEN */
+/* OUVERTURE */
 function openLetter(){
 
     document.getElementById("envelope").classList.add("open");
@@ -261,8 +263,6 @@ function openLetter(){
         document.getElementById("screen").style.display="none";
         document.getElementById("content").style.display="block";
         document.getElementById("gameBtn").style.display="block";
-
-        document.getElementById("music").play();
 
         initPuzzle();
     },1000);
@@ -274,7 +274,7 @@ function openGame(){
     document.getElementById("game").style.display="block";
 }
 
-/* PUZZLE */
+/* PUZZLE FIABLE */
 function initPuzzle(){
 
     const puzzle=document.getElementById("puzzle");
@@ -283,59 +283,66 @@ function initPuzzle(){
     let arr=[0,1,2,3,4,5,6,7,8];
     arr.sort(()=>Math.random()-0.5);
 
-    arr.forEach((pos,i)=>{
+    arr.forEach((pos)=>{
 
         const t=document.createElement("div");
         t.className="tile";
 
-        t.style.backgroundPosition=
+        t.style.backgroundPosition =
         `${(pos%3)*-100}px ${Math.floor(pos/3)*-100}px`;
 
-        t.dataset.correct=pos;
+        t.dataset.correct = pos;
 
-        t.onclick=()=>selectTile(t);
+        t.onclick = ()=>selectTile(t);
 
         puzzle.appendChild(t);
     });
 }
 
+/* SWAP DOM (FIABLE) */
 function selectTile(tile){
 
     if(!selected){
-        selected=tile;
-        tile.style.outline="2px solid white";
-    } else {
-
-        let tmp=tile.style.backgroundPosition;
-        tile.style.backgroundPosition=selected.style.backgroundPosition;
-        selected.style.backgroundPosition=tmp;
-
-        selected.style.outline="";
-        selected=null;
-
-        checkPuzzle();
+        selected = tile;
+        tile.style.outline = "2px solid white";
+        return;
     }
+
+    const parent = tile.parentNode;
+    const selParent = selected.parentNode;
+
+    const tileNext = tile.nextSibling;
+    const selNext = selected.nextSibling;
+
+    parent.insertBefore(selected, tileNext);
+    selParent.insertBefore(tile, selNext);
+
+    selected.style.outline = "";
+    selected = null;
+
+    checkPuzzle();
 }
 
 /* CHECK + EXPLOSION */
 function checkPuzzle(){
 
-    const tiles=document.querySelectorAll(".tile");
+    const tiles = document.querySelectorAll(".tile");
 
-    let ok=true;
+    let ok = true;
 
     tiles.forEach((t,i)=>{
-        if(t.dataset.correct!=i) ok=false;
+        if(parseInt(t.dataset.correct) !== i) ok = false;
     });
 
     if(ok){
+
         document.getElementById("puzzleMsg").style.display="block";
 
-        // 💥 explosion
-        let boom=document.createElement("div");
+        let boom = document.createElement("div");
         boom.className="explosion";
         boom.innerHTML="💖✨🎉";
         document.body.appendChild(boom);
+
         setTimeout(()=>boom.remove(),1000);
     }
 }
