@@ -62,7 +62,6 @@ body{
     margin:auto;
 }
 
-/* LETTRE */
 .letter{
     background:rgba(255,255,255,0.15);
     padding:30px;
@@ -70,7 +69,6 @@ body{
     line-height:1.8;
 }
 
-/* GALERIE */
 .gallery{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -85,7 +83,7 @@ body{
     border-radius:15px;
 }
 
-/* BOUTON */
+/* ===== BOUTON ===== */
 #gameBtn{
     position:fixed;
     bottom:25px;
@@ -125,11 +123,15 @@ body{
     cursor:pointer;
 }
 
-/* MESSAGE */
+/* MESSAGES */
 #puzzleMsg{
     display:none;
     margin-top:20px;
-    animation: pop 0.6s ease;
+}
+
+#quiz{
+    display:none;
+    margin-top:20px;
 }
 
 /* EXPLOSION */
@@ -143,10 +145,9 @@ body{
     pointer-events:none;
 }
 
-/* QUIZ */
-#quiz{
-    display:none;
-    margin-top:20px;
+@keyframes boom{
+    0%{transform:translate(-50%,-50%) scale(0.5); opacity:1;}
+    100%{transform:translate(-50%,-60%) scale(2); opacity:0;}
 }
 
 /* ANIM */
@@ -154,16 +155,6 @@ body{
     0%{transform:translateY(0)}
     50%{transform:translateY(-10px)}
     100%{transform:translateY(0)}
-}
-
-@keyframes boom{
-    0%{transform:translate(-50%,-50%) scale(0.5); opacity:1;}
-    100%{transform:translate(-50%,-60%) scale(2); opacity:0;}
-}
-
-@keyframes pop{
-    from{transform:scale(0.5); opacity:0;}
-    to{transform:scale(1); opacity:1;}
 }
 
 </style>
@@ -188,23 +179,13 @@ body{
     <div class="letter">
         <h2>Mon Chaton ❤️</h2>
 
-        <p>
-        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
-        nous avons construit quelque chose de précieux.
-        </p>
+        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement, nous avons construit quelque chose de précieux.</p>
 
-        <p>
-        Tu me pousses à devenir une meilleure version de moi-même,
-        et j’espère faire la même chose pour toi.
-        </p>
+        <p>Tu me pousses à devenir une meilleure version de moi-même, et j’espère faire la même chose pour toi.</p>
 
-        <p>
-        Dans les bons comme les mauvais moments, on avance ensemble.
-        </p>
+        <p>Dans les bons comme les mauvais moments, on avance ensemble.</p>
 
-        <p>
-        Merci d’être toi ❤️
-        </p>
+        <p>Merci d’être toi ❤️</p>
 
         <p>— Doudou</p>
     </div>
@@ -254,7 +235,7 @@ body{
 
 let selected = null;
 
-/* OUVERTURE */
+/* OPEN */
 function openLetter(){
 
     document.getElementById("envelope").classList.add("open");
@@ -274,7 +255,7 @@ function openGame(){
     document.getElementById("game").style.display="block";
 }
 
-/* PUZZLE FIABLE */
+/* PUZZLE */
 function initPuzzle(){
 
     const puzzle=document.getElementById("puzzle");
@@ -299,7 +280,7 @@ function initPuzzle(){
     });
 }
 
-/* SWAP DOM (FIABLE) */
+/* SWAP */
 function selectTile(tile){
 
     if(!selected){
@@ -323,7 +304,7 @@ function selectTile(tile){
     checkPuzzle();
 }
 
-/* CHECK + EXPLOSION */
+/* CHECK + ENCHAÎNEMENT */
 function checkPuzzle(){
 
     const tiles = document.querySelectorAll(".tile");
@@ -338,12 +319,18 @@ function checkPuzzle(){
 
         document.getElementById("puzzleMsg").style.display="block";
 
+        // 💥 explosion
         let boom = document.createElement("div");
         boom.className="explosion";
         boom.innerHTML="💖✨🎉";
         document.body.appendChild(boom);
 
         setTimeout(()=>boom.remove(),1000);
+
+        // ❓ quiz après puzzle
+        setTimeout(()=>{
+            document.getElementById("quiz").style.display="block";
+        },1200);
     }
 }
 
