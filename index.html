@@ -11,8 +11,8 @@ body{
     margin:0;
     font-family: Georgia, serif;
     color:white;
-    background: linear-gradient(135deg, #ff4f81, #ff8fb1);
     overflow-x:hidden;
+    background: linear-gradient(135deg, #ff4f81, #ff8fb1);
 }
 
 /* ===== ENVELOPPE ===== */
@@ -23,7 +23,22 @@ body{
     align-items:center;
     flex-direction:column;
     text-align:center;
-    transition: opacity 0.8s ease;
+    position:relative;
+}
+
+.screen::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.12);
+}
+
+.screen > *{
+    position:relative;
+}
+
+.envelope-container{
+    perspective:1000px;
 }
 
 .envelope{
@@ -31,6 +46,7 @@ body{
     height:140px;
     position:relative;
     cursor:pointer;
+    transform-style:preserve-3d;
     animation: float 3s ease-in-out infinite;
 }
 
@@ -48,7 +64,8 @@ body{
     height:100%;
     background:#ff4f81;
     clip-path: polygon(0 0, 50% 55%, 100% 0);
-    transition: transform 1s;
+    transform-origin: top;
+    transition: transform 1s ease;
 }
 
 .envelope.open .envelope-flap{
@@ -58,23 +75,36 @@ body{
 /* ===== CONTENU ===== */
 .content{
     display:none;
-    padding:40px 20px;
+    padding:50px 20px;
     max-width:900px;
     margin:auto;
 }
 
+.counter{
+    text-align:center;
+    font-size:1.5rem;
+    margin-bottom:40px;
+}
+
+.big{
+    font-size:3rem;
+    font-weight:bold;
+    display:block;
+}
+
 .letter{
-    background:rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.18);
     padding:30px;
     border-radius:20px;
+    backdrop-filter: blur(10px);
     line-height:1.8;
 }
 
 .gallery{
+    margin-top:40px;
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
     gap:15px;
-    margin-top:25px;
 }
 
 .gallery img{
@@ -84,10 +114,26 @@ body{
     border-radius:15px;
 }
 
+/* ===== BOUTON ===== */
+#gameBtn{
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:18px 28px;
+    font-size:22px;
+    border-radius:25px;
+    background:rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+    cursor:pointer;
+    display:none;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+}
+
 /* ===== GAME ===== */
 #game{
     display:none;
-    padding:40px 20px;
+    padding:50px 20px;
     text-align:center;
 }
 
@@ -151,37 +197,35 @@ body{
 <!-- ENVELOPPE -->
 <div class="screen" id="screen">
 
-    <div class="envelope" id="envelope" onclick="openLetter()">
-        <div class="envelope-flap"></div>
-        <div class="envelope-base"></div>
+    <div class="envelope-container">
+        <div class="envelope" id="envelope" onclick="ouvrir()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-base"></div>
+        </div>
     </div>
 
-    <p>Clique pour ouvrir ❤️</p>
+    <div>Pour mon Chaton ❤️</div>
 </div>
 
 <!-- CONTENU -->
 <div class="content" id="content">
 
+    <div class="counter">
+        Ensemble depuis le 17 juin 2023
+    </div>
+
     <div class="letter">
         <h2>Mon Chaton ❤️</h2>
 
-        <p>
-        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
-        nous avons construit quelque chose de précieux.
-        </p>
+        <p>Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
+        nous avons construit quelque chose de précieux.</p>
 
-        <p>
-        Tu me pousses à devenir une meilleure version de moi-même,
-        et j’espère faire la même chose pour toi.
-        </p>
+        <p>Tu me pousses à devenir une meilleure version de moi-même,
+        et j’espère faire la même chose pour toi.</p>
 
-        <p>
-        Dans les bons comme les mauvais moments, on avance ensemble.
-        </p>
+        <p>Dans les bons comme les mauvais moments, on avance ensemble.</p>
 
-        <p>
-        Merci d’être toi ❤️
-        </p>
+        <p>Merci d’être toi ❤️</p>
 
         <p>— Doudou</p>
     </div>
@@ -211,45 +255,43 @@ body{
         <p>Où on s’est rencontré ?</p>
         <input id="q1">
 
-        <p style="display:none;" id="q2wrap">Quand premier bisou ?</p>
+        <p id="q2wrap" style="display:none;">Quand premier bisou ?</p>
         <input id="q2" style="display:none;">
 
         <button onclick="checkQuiz()">Valider</button>
 
-        <div id="quizOk" style="display:none;">
-            🎁 Bien joué ❤️
-        </div>
+        <div id="quizOk" style="display:none;">🎁 Bien joué ❤️</div>
 
     </div>
 
 </div>
 
+<!-- BOUTON -->
+<div id="gameBtn" onclick="ouvrirJeu()">🎁 Jeu de piste</div>
+
 <script>
 
 let selected=null;
 
-/* OPEN ENVELOPE */
-function openLetter(){
-
+/* OUVERTURE */
+function ouvrir(){
     document.getElementById("envelope").classList.add("open");
 
     setTimeout(()=>{
-
-        document.getElementById("screen").style.opacity="0";
-
-        setTimeout(()=>{
-
-            document.getElementById("screen").style.display="none";
-            document.getElementById("content").style.display="block";
-
-            initPuzzle();
-
-        },800);
-
-    },900);
+        document.getElementById("screen").style.display="none";
+        document.getElementById("content").style.display="block";
+        document.getElementById("gameBtn").style.display="block";
+        initPuzzle();
+    },1000);
 }
 
-/* INIT PUZZLE */
+/* JEU */
+function ouvrirJeu(){
+    document.getElementById("content").style.display="none";
+    document.getElementById("game").style.display="block";
+}
+
+/* PUZZLE */
 function initPuzzle(){
 
     const puzzle=document.getElementById("puzzle");
@@ -266,9 +308,9 @@ function initPuzzle(){
         t.style.backgroundPosition =
         `${(pos%3)*-100}px ${Math.floor(pos/3)*-100}px`;
 
-        t.dataset.correct = pos;
+        t.dataset.correct=pos;
 
-        t.onclick = ()=>selectTile(t);
+        t.onclick=()=>selectTile(t);
 
         puzzle.appendChild(t);
     });
@@ -286,8 +328,8 @@ function selectTile(tile){
     const parent=tile.parentNode;
     const selParent=selected.parentNode;
 
-    parent.insertBefore(selected, tile.nextSibling);
-    selParent.insertBefore(tile, selected.nextSibling);
+    parent.insertBefore(selected,tile.nextSibling);
+    selParent.insertBefore(tile,selected.nextSibling);
 
     selected.style.outline="";
     selected=null;
@@ -295,7 +337,7 @@ function selectTile(tile){
     checkPuzzle();
 }
 
-/* CHECK PUZZLE */
+/* CHECK */
 function checkPuzzle(){
 
     const tiles=document.querySelectorAll(".tile");
@@ -318,29 +360,26 @@ function checkPuzzle(){
         setTimeout(()=>boom.remove(),1000);
 
         setTimeout(()=>{
-
             document.getElementById("quiz").style.display="block";
             document.getElementById("q2").style.display="block";
             document.getElementById("q2wrap").style.display="block";
-
         },1200);
     }
 }
 
-/* QUIZ 2 ETAPES */
+/* QUIZ PROGRESSIF */
 function checkQuiz(){
 
     let q1=document.getElementById("q1").value.toLowerCase().trim();
     let q2=document.getElementById("q2").value.toLowerCase().trim();
 
-    if(q2.trim()===""){
+    if(document.getElementById("q2").style.display==="none"){
 
         if(q1.includes("parc") || q1.includes("éole") || q1.includes("eole")){
             alert("Bonne réponse ❤️");
         } else {
-            alert("Pas encore 😏 pense au lieu ❤️");
+            alert("Pense au lieu ❤️");
         }
-
         return;
     }
 
