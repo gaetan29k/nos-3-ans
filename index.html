@@ -6,7 +6,36 @@
 <title>Pour Laëtitia ❤️</title>
 
 <style>
+/* ===== REVEAL FINAL ===== */
 
+#reveal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.92);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    z-index:9999;
+}
+
+#revealPhoto{
+    width:80%;
+    max-width:700px;
+    border-radius:20px;
+    opacity:0;
+    transform:scale(0.7);
+    transition:2s ease;
+}
+
+#revealText{
+    margin-top:30px;
+    text-align:center;
+    font-size:1.5rem;
+    opacity:0;
+    transform:translateY(40px);
+    transition:1.5s ease;
+}
 body{
     margin:0;
     font-family: Georgia, serif;
@@ -378,41 +407,81 @@ function checkPuzzle(){
 
 /* QUIZ PROGRESSIF PROPRE */
 function checkQuiz(){
+    function lancerReveal(){
+
+    document.getElementById("reveal").style.display="flex";
+
+    setTimeout(()=>{
+        document.getElementById("revealPhoto").style.opacity="1";
+        document.getElementById("revealPhoto").style.transform="scale(1)";
+    },100);
+
+    setTimeout(()=>{
+        document.getElementById("revealText").style.opacity="1";
+        document.getElementById("revealText").style.transform="translateY(0)";
+    },1800);
+
+}
 
     let q1=document.getElementById("q1").value.toLowerCase().trim();
     let q2=document.getElementById("q2").value.toLowerCase().trim();
 
+    let step1=document.getElementById("step1");
     let step2=document.getElementById("step2");
 
-    // STEP 1
+    // Question 1
     if(step2.style.display==="none"){
 
-        if(q1.includes("parc") || q1.includes("éole") || q1.includes("eole")){
+        if(
+            q1==="parc" ||
+            q1==="parc d'éole" ||
+            q1==="parc deole" ||
+            q1==="parc d eole"
+        ){
 
+            step1.style.display="none";
             step2.style.display="block";
 
-            // petite transition douce
-            step2.style.opacity=0;
-            setTimeout(()=>step2.style.opacity=1,50);
-
-        } else {
+        }else{
             alert("Pense au lieu ❤️");
         }
 
         return;
     }
 
-    // STEP 2
-    if(q2.includes("22 juin") || q2.includes("22/06")){
+    // Question 2
+    if(
+        q2==="22 juin" ||
+        q2==="22/06"
+    ){
 
         document.getElementById("quizOk").style.display="block";
 
-    } else {
+        setTimeout(()=>{
+            lancerReveal();
+        },1200);
+
+    }else{
         alert("Pense à la date ❤️");
     }
 }
 
 </script>
+<!-- REVEAL FINAL -->
+<div id="reveal">
 
+    <img src="photo5.jpg" id="revealPhoto">
+
+    <div id="revealText">
+        ❤️ Mon Chaton ❤️
+        <br><br>
+        Tu as réussi toutes les épreuves.
+        <br><br>
+        Ton dernier indice est :
+        <br><br>
+        🎁 Regarde près du lit 🎁
+    </div>
+
+</div>
 </body>
 </html>
