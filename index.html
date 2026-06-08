@@ -246,6 +246,7 @@ body{
 
     <div class="counter">
         Ensemble depuis le 17 juin 2023
+        <span class="big" id="days"></span>
     </div>
 
     <div class="letter">
@@ -465,7 +466,23 @@ function checkQuiz(){
         alert("Pense à la date ❤️");
     }
 }
+const start = new Date("2023-06-17");
 
+function updateDays(){
+
+    const now = new Date();
+
+    const diff = now - start;
+
+    const days = Math.floor(
+        diff / (1000 * 60 * 60 * 24)
+    );
+
+    document.getElementById("days").innerHTML =
+        "❤️ " + days + " jours ensemble ❤️";
+}
+
+updateDays();
 </script>
 <!-- REVEAL FINAL -->
 <div id="reveal">
