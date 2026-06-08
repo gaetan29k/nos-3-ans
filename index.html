@@ -14,7 +14,7 @@ body{
     overflow-x:hidden;
 }
 
-/* SCREEN ENVELOPPE */
+/* ÉCRAN ENVELOPPE */
 .screen{
     height:100vh;
     display:flex;
@@ -25,25 +25,25 @@ body{
 
     background-image: url("photo5.jpg");
     background-size: cover;
-    background-position: center;
-    position: relative;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    position:relative;
 }
 
 /* VOILE SOMBRE */
 .screen::before{
     content:"";
     position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+    inset:0;
     background:rgba(0,0,0,0.45);
+    z-index:0;
 }
 
-/* contenu au-dessus du voile */
+/* contenu au-dessus */
 .screen > *{
     position:relative;
-    z-index:1;
+    z-index:2;
 }
 
 /* ENVELOPPE */
@@ -79,13 +79,12 @@ body{
     font-size:1.3rem;
 }
 
-/* CONTENU */
+/* CONTENU LETTRE */
 .content{
     display:none;
     padding:50px 20px;
     max-width:900px;
     margin:auto;
-    color:white;
 }
 
 /* COMPTEUR */
@@ -148,8 +147,14 @@ body{
 
 <!-- ENVELOPPE -->
 <div class="screen" id="screen">
+
     <div class="envelope" onclick="ouvrir()"></div>
-    <div class="text-start">Pour mon Chaton ❤️<br>Clique pour ouvrir</div>
+
+    <div class="text-start">
+        Pour mon Chaton ❤️<br>
+        Clique pour ouvrir
+    </div>
+
 </div>
 
 <!-- CONTENU -->
@@ -164,7 +169,7 @@ body{
         <h2>Mon Chaton ❤️</h2>
 
         <p>
-        Depuis le 18 mai 2023, puis ce 17 juin où tout a commencé officiellement,
+        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
         nous avons construit quelque chose de précieux.
         </p>
 
@@ -197,6 +202,7 @@ body{
 
 <script>
 
+// date relation
 const start = new Date("2023-06-17");
 
 function updateDays(){
@@ -204,16 +210,20 @@ function updateDays(){
     const diff = now - start;
     const days = Math.floor(diff / (1000*60*60*24));
 
-    document.getElementById("days").innerText = days + " jours ❤️";
+    document.getElementById("days").innerText =
+        days + " jours ❤️";
 }
+
 updateDays();
 
+// ouvrir enveloppe
 function ouvrir(){
     document.getElementById("screen").style.display = "none";
     document.getElementById("content").style.display = "block";
     hearts();
 }
 
+// coeurs animés
 function hearts(){
     setInterval(()=>{
         const h = document.createElement("div");
