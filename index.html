@@ -15,7 +15,7 @@ body{
     background: linear-gradient(135deg, #ff4f81, #ff8fb1);
 }
 
-/* ========== ENVELOPPE ========== */
+/* ========== ACCUEIL ========== */
 .screen{
     height:100vh;
     display:flex;
@@ -35,6 +35,7 @@ body{
 
 .screen > *{ position:relative; }
 
+/* ========== ENVELOPPE ========== */
 .envelope-container{ perspective:1000px; }
 
 .envelope{
@@ -69,12 +70,6 @@ body{
     transform: rotateX(180deg);
 }
 
-/* texte */
-.text-start{
-    margin-top:25px;
-    font-size:1.3rem;
-}
-
 /* ========== CONTENU ========== */
 .content{
     display:none;
@@ -83,7 +78,7 @@ body{
     margin:auto;
 }
 
-/* lettre */
+/* LETTRE RESTAURÉE */
 .letter{
     background:rgba(255,255,255,0.18);
     padding:30px;
@@ -123,23 +118,7 @@ body{
     display:none;
 }
 
-/* ========== ZOOM IMAGE ========== */
-.zoom-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.85);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:1000;
-}
-
-.zoom-overlay img{
-    max-width:90%;
-    max-height:90%;
-}
-
-/* ========== PUZZLE ========== */
+/* ========== PUZZLE + GAME ========== */
 #game{
     display:none;
     padding:60px 20px;
@@ -159,7 +138,7 @@ body{
 .tile{
     width:100%;
     height:100%;
-    background-image:url("photo1.jpg"); /* 👈 TON IMAGE */
+    background-image:url("photo1.jpg");
     background-size:300px 300px;
     cursor:pointer;
 }
@@ -196,7 +175,10 @@ body{
         </div>
     </div>
 
-    <div class="text-start">Pour mon Chaton ❤️<br>Clique pour ouvrir</div>
+    <div class="text-start">
+        Pour mon Chaton ❤️<br>
+        Clique pour ouvrir
+    </div>
 
 </div>
 
@@ -204,10 +186,33 @@ body{
 <div class="content" id="content">
 
     <div class="letter">
+
         <h2>Mon Chaton ❤️</h2>
 
-        <p>Depuis le 18 mai 2023 puis le 17 juin, nous avançons ensemble.</p>
-        <p>Merci d’être toi ❤️</p>
+        <p>
+        Depuis le 18 mai 2023, puis le 17 juin où tout a commencé officiellement,
+        nous avons construit quelque chose de précieux.
+        </p>
+
+        <p>
+        Tu me pousses à devenir une meilleure version de moi-même,
+        et j’espère faire la même chose pour toi.
+        </p>
+
+        <p>
+        Dans les bons comme les mauvais moments, on avance ensemble.
+        </p>
+
+        <p>
+        Tu me pousses à devenir une meilleure version de moi-même,
+        et j’espère faire la même chose pour toi dans la vie de tous les jours,
+        dans nos projets et dans les moments simples comme les moments difficiles.
+        </p>
+
+        <p>
+        Merci d’être toi ❤️
+        </p>
+
         <p>— Doudou</p>
     </div>
 
@@ -223,25 +228,34 @@ body{
 <!-- JEU -->
 <div id="game">
 
-    <h2>🧩 Puzzle secret</h2>
-    <p>Recompose l’image ❤️</p>
+    <h2>🧩 Puzzle + Quiz</h2>
 
     <div id="puzzle"></div>
 
     <div id="puzzleMsg" style="display:none;">
-        🎉 Bravo ❤️<br>
-        Indice : regarde là où tu dors 🛏️
+        🎉 Bravo ❤️
+    </div>
+
+    <div id="quiz" style="display:none; margin-top:20px;">
+        <h3>❓ Quiz souvenirs</h3>
+
+        <p>Où on s’est rencontré ?</p>
+        <input id="q1">
+
+        <p>Quand premier bisou ?</p>
+        <input id="q2">
+
+        <button onclick="checkQuiz()">Valider</button>
+
+        <div id="quizOk" style="display:none;">
+            🎁 Tu peux continuer ❤️
+        </div>
     </div>
 
 </div>
 
 <!-- BOUTON JEU -->
 <div id="gameBtn" onclick="ouvrirJeu()">🎁 Jeu de piste</div>
-
-<!-- ZOOM -->
-<div class="zoom-overlay" id="zoom" onclick="closeZoom()">
-    <img id="zoomImg">
-</div>
 
 <script>
 
@@ -251,54 +265,39 @@ function ouvrir(){
     setTimeout(()=>{
         document.getElementById("screen").style.display="none";
         document.getElementById("content").style.display="block";
-        document.getElementById("gameBtn").style.display="block";
         lancerEffets();
         initPuzzle();
     },1000);
 }
 
-/* NAV */
+/* LETTRE + JEU NAV */
 function ouvrirJeu(){
     document.getElementById("content").style.display="none";
     document.getElementById("game").style.display="block";
 }
 
-/* ZOOM */
-function zoomImage(src){
-    document.getElementById("zoomImg").src = src;
-    document.getElementById("zoom").style.display="flex";
-}
-
-function closeZoom(){
-    document.getElementById("zoom").style.display="none";
-}
-
 /* PUZZLE */
-let order = [];
-let selected = null;
+let selected=null;
 
 function initPuzzle(){
-    const puzzle = document.getElementById("puzzle");
+    const puzzle=document.getElementById("puzzle");
     puzzle.innerHTML="";
-    order=[];
 
-    for(let i=0;i<9;i++) order.push(i);
+    let arr=[];
+    for(let i=0;i<9;i++) arr.push(i);
+    arr.sort(()=>Math.random()-0.5);
 
-    order.sort(()=>Math.random()-0.5);
+    arr.forEach((pos,i)=>{
+        const t=document.createElement("div");
+        t.className="tile";
 
-    order.forEach((pos,i)=>{
-        const tile=document.createElement("div");
-        tile.className="tile";
+        t.style.backgroundPosition=
+        `${(pos%3)*-100}% ${Math.floor(pos/3)*-100}%`;
 
-        let x=(pos%3)*-100;
-        let y=Math.floor(pos/3)*-100;
+        t.dataset.correct=pos;
+        t.onclick=()=>selectTile(t);
 
-        tile.style.backgroundPosition = `${x}% ${y}%`;
-        tile.dataset.correct=pos;
-
-        tile.onclick=()=>selectTile(tile);
-
-        puzzle.appendChild(tile);
+        puzzle.appendChild(t);
     });
 }
 
@@ -307,9 +306,9 @@ function selectTile(tile){
         selected=tile;
         tile.style.outline="2px solid white";
     }else{
-        let temp=tile.style.backgroundPosition;
+        let tmp=tile.style.backgroundPosition;
         tile.style.backgroundPosition=selected.style.backgroundPosition;
-        selected.style.backgroundPosition=temp;
+        selected.style.backgroundPosition=tmp;
 
         selected.style.outline="";
         selected=null;
@@ -328,28 +327,40 @@ function checkPuzzle(){
 
     if(ok){
         document.getElementById("puzzleMsg").style.display="block";
+        document.getElementById("quiz").style.display="block";
+    }
+}
+
+/* QUIZ */
+function checkQuiz(){
+    let a1=document.getElementById("q1").value.toLowerCase();
+    let a2=document.getElementById("q2").value.toLowerCase();
+
+    if(a1.includes("lycée") && a2.includes("juin")){
+        document.getElementById("quizOk").style.display="block";
+        document.getElementById("gameBtn").style.display="block";
+    } else {
+        alert("Pas encore 😏");
     }
 }
 
 /* effets */
 function lancerEffets(){
     setInterval(()=>{
-        const h=document.createElement("div");
+        let h=document.createElement("div");
         h.className="heart";
         h.innerHTML="❤️";
         h.style.left=Math.random()*100+"vw";
-        h.style.fontSize=(15+Math.random()*20)+"px";
         h.style.animationDuration=(4+Math.random()*3)+"s";
         document.body.appendChild(h);
         setTimeout(()=>h.remove(),8000);
     },300);
 
     setInterval(()=>{
-        const p=document.createElement("div");
+        let p=document.createElement("div");
         p.className="petal";
         p.innerHTML="🌹";
         p.style.left=Math.random()*100+"vw";
-        p.style.fontSize=(12+Math.random()*18)+"px";
         p.style.animationDuration=(5+Math.random()*4)+"s";
         document.body.appendChild(p);
         setTimeout(()=>p.remove(),9000);
