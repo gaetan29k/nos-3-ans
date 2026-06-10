@@ -426,8 +426,8 @@ body {
       <input id="q1" placeholder="Ta réponse…" autocomplete="off">
     </div>
     <div class="quiz-block" id="step2" style="display:none;">
-      <p>Date de notre premier bisou ?</p>
-      <input id="q2" placeholder="Ex : 22 juin" autocomplete="off">
+      <p>Gaëtan à pécho Laëtitia ?</p>
+      <input id="q2" placeholder="Ex : honnêteté " autocomplete="off">
     </div>
     <br>
     <button class="quiz-btn" onclick="checkQuiz()">Valider ✓</button>
@@ -682,7 +682,7 @@ function checkPuzzle(){
    QUIZ
 ========================================================== */
 const repQ1=["parc","parc d'éole","parc deole","parc d eole","éole","eole","parc d'eole"];
-const repQ2=["22 juin","22/06","22/06/2023","le 22 juin","22 juin 2023"];
+const repQ2=["Oui","Ouais","Yes","Oué","Wé"];
 
 function checkQuiz(){
   const s1=document.getElementById("step1"), s2=document.getElementById("step2");
@@ -702,7 +702,7 @@ function checkQuiz(){
       allerA(document.getElementById("cbj-screen"), false);
       cbjInit();
     },1800);
-  } else { showToast("Pense à cette date spéciale ❤️"); }
+  } else { showToast("Pense à ce fameux moment en 2 temps ❤️"); }
 }
 
 /* ==========================================================
