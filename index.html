@@ -309,21 +309,30 @@ body {
 
 /* ===== REVEAL FINAL ===== */
 #reveal {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.93);
+  position: fixed; inset: 0; background: rgba(0,0,0,0.95);
   display: none; justify-content: center; align-items: center;
-  flex-direction: column; z-index: 9999; padding: 30px 20px; text-align: center;
-}
-#revealPhoto {
-  width: 80%; max-width: 600px; border-radius: 20px;
-  opacity: 0; transform: scale(0.7);
-  transition: opacity 1.6s ease, transform 1.6s cubic-bezier(0.34,1.4,0.64,1);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  flex-direction: column; z-index: 9999; padding: 30px 20px;
+  text-align: center; gap: 28px; overflow-y: auto;
 }
 #revealText {
-  margin-top: 32px; font-size: 1.4rem; line-height: 2;
-  opacity: 0; transform: translateY(30px);
-  transition: opacity 1.2s ease, transform 1.2s ease; max-width: 480px;
+  font-size: 1.35rem; line-height: 2; max-width: 480px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
 }
+#revealCarousel {
+  position: relative; width: 90%; max-width: 560px;
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 16px 50px rgba(0,0,0,0.6);
+  aspect-ratio: 4/3;
+  opacity: 0; transform: scale(0.88);
+  transition: opacity 1.4s ease, transform 1.4s cubic-bezier(0.34,1.2,0.64,1);
+}
+#revealSlides {
+  display: flex; width: 100%; height: 100%;
+  transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+#revealSlides img { min-width:100%; height:100%; object-fit:cover; flex-shrink:0; }
+#revealDots { display:flex; justify-content:center; gap:8px; opacity:0; transition:opacity 1s ease; }
 
 /* ===== CONFETTIS ===== */
 .confetti-piece {
@@ -468,13 +477,23 @@ body {
 
 <!-- REVEAL FINAL -->
 <div id="reveal">
-  <img src="photo5.jpg" id="revealPhoto" alt="Photo surprise">
   <div id="revealText">
     ❤️ Mon Chaton ❤️<br><br>
     Tu as réussi toutes les épreuves.<br><br>
-    Ton dernier indice est :<br><br>
     🎁 Regarde près du lit 🎁
   </div>
+  <div id="revealCarousel">
+    <div id="revealSlides">
+      <img src="photo1.jpg" alt="Souvenir 1">
+      <img src="photo2.jpg" alt="Souvenir 2">
+      <img src="photo3.jpg" alt="Souvenir 3">
+      <img src="photo4.jpg" alt="Souvenir 4">
+      <img src="photo5.jpg" alt="Souvenir 5">
+    </div>
+    <button class="carousel-btn prev" onclick="revealCarouselMove(-1)">&#8249;</button>
+    <button class="carousel-btn next" onclick="revealCarouselMove(1)">&#8250;</button>
+  </div>
+  <div id="revealDots"></div>
 </div>
 
 <audio id="music" loop>
@@ -866,12 +885,24 @@ function cbjDraw(){
   for(let r=0;r<=CBJ_ROWS;r++){ cbjCtx.beginPath(); cbjCtx.moveTo(0,r*CBJ_CELL); cbjCtx.lineTo(CBJ_W,r*CBJ_CELL); cbjCtx.stroke(); }
   for(let c=0;c<=CBJ_COLS;c++){ cbjCtx.beginPath(); cbjCtx.moveTo(c*CBJ_CELL,0); cbjCtx.lineTo(c*CBJ_CELL,CBJ_H); cbjCtx.stroke(); }
 
-  /* Couloirs de sortie (halo coloré) */
+  /* Couloirs de sortie — fond coloré bien visible */
   for(const e of cbjExits){
     const pal=CBJ_PAL[e.id]||CBJ_PAL.gray;
-    cbjCtx.save(); cbjCtx.globalAlpha=0.055; cbjCtx.fillStyle=pal.fill;
+    cbjCtx.save();
+    cbjCtx.globalAlpha=e.done?0.22:0.14;
+    cbjCtx.fillStyle=pal.fill;
     if(e.side==="R"||e.side==="L") cbjCtx.fillRect(0,e.lane*CBJ_CELL,CBJ_W,CBJ_CELL);
     else cbjCtx.fillRect(e.lane*CBJ_CELL,0,CBJ_CELL,CBJ_H);
+    /* Bordure colorée sur le bord de sortie */
+    cbjCtx.globalAlpha=0.75;
+    cbjCtx.strokeStyle=pal.fill;
+    cbjCtx.lineWidth=4;
+    cbjCtx.beginPath();
+    if(e.side==="R"){ cbjCtx.moveTo(CBJ_W,e.lane*CBJ_CELL); cbjCtx.lineTo(CBJ_W,(e.lane+1)*CBJ_CELL); }
+    else if(e.side==="L"){ cbjCtx.moveTo(0,e.lane*CBJ_CELL); cbjCtx.lineTo(0,(e.lane+1)*CBJ_CELL); }
+    else if(e.side==="T"){ cbjCtx.moveTo(e.lane*CBJ_CELL,0); cbjCtx.lineTo((e.lane+1)*CBJ_CELL,0); }
+    else if(e.side==="B"){ cbjCtx.moveTo(e.lane*CBJ_CELL,CBJ_H); cbjCtx.lineTo((e.lane+1)*CBJ_CELL,CBJ_H); }
+    cbjCtx.stroke();
     cbjCtx.restore();
   }
 
@@ -931,7 +962,13 @@ function cbjVictoire(){
     buildDots();
     bindCarouselClicks();
     lancerConfettis();
-    setTimeout(lancerReveal, 2000);
+    /* Bouton manuel — elle voit les photos à son rythme puis clique */
+    const btn=document.createElement("button");
+    btn.id="revealBtn";
+    btn.textContent="🎁 Voir la surprise";
+    btn.style.cssText="margin-top:32px;padding:16px 36px;font-size:1.1rem;border-radius:50px;border:1px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.2);color:white;cursor:pointer;font-family:Georgia,serif;backdrop-filter:blur(8px);display:block;margin-left:auto;margin-right:auto;";
+    btn.onclick=()=>{ btn.remove(); lancerReveal(); };
+    document.getElementById("memories").appendChild(btn);
   },2200);
 }
 
@@ -1071,13 +1108,38 @@ document.addEventListener("keydown",e=>{
 });
 
 /* ==========================================================
-   REVEAL FINAL
+   REVEAL FINAL — carousel 5 photos
 ========================================================== */
+let revealIdx=0;
+const REVEAL_TOTAL=5;
+
+function buildRevealDots(){
+  const d=document.getElementById("revealDots"); d.innerHTML="";
+  for(let i=0;i<REVEAL_TOTAL;i++){
+    const dot=document.createElement("div");
+    dot.className="dot"+(i===0?" active":"");
+    dot.onclick=()=>revealCarouselGo(i); d.appendChild(dot);
+  }
+}
+function revealCarouselGo(idx){
+  revealIdx=(idx+REVEAL_TOTAL)%REVEAL_TOTAL;
+  document.getElementById("revealSlides").style.transform=`translateX(-${revealIdx*100}%)`;
+  document.querySelectorAll("#revealDots .dot").forEach((d,i)=>d.classList.toggle("active",i===revealIdx));
+}
+function revealCarouselMove(dir){ revealCarouselGo(revealIdx+dir); }
+
 function lancerReveal(){
   const rev=document.getElementById("reveal"); rev.style.display="flex";
-  setTimeout(()=>{ const p=document.getElementById("revealPhoto"); p.style.opacity="1"; p.style.transform="scale(1)"; },150);
-  setTimeout(()=>{ const t=document.getElementById("revealText"); t.style.opacity="1"; t.style.transform="translateY(0)"; },2000);
-  lancerConfettis(); setTimeout(lancerConfettis,1200);
+  buildRevealDots();
+  setInterval(()=>revealCarouselMove(1), 4000);
+  setTimeout(()=>{
+    const t=document.getElementById("revealText"); t.style.opacity="1"; t.style.transform="translateY(0)";
+  },150);
+  setTimeout(()=>{
+    const c=document.getElementById("revealCarousel"); c.style.opacity="1"; c.style.transform="scale(1)";
+    const dots=document.getElementById("revealDots"); dots.style.opacity="1";
+  },900);
+  lancerConfettis(); setTimeout(lancerConfettis,1400);
 }
 
 /* ==========================================================
