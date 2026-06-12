@@ -488,7 +488,7 @@ body {
 <!-- ===================== ÉCRAN 4 : COLOR BLOCK JAM ===================== -->
 <div id="cbj-screen">
   <h2>🎨 Étape 3 — Color Block Jam</h2>
-  <p class="cbj-sub">Guide chaque bloc coloré vers la sortie de sa couleur 💕</p>
+  <p class="cbj-sub">Libère nos cœurs — chaque couleur a sa place, trouve-la ❤️</p>
   <div id="cbj-wrap">
     <canvas id="cbj-canvas"></canvas>
   </div>
@@ -787,13 +787,13 @@ cbjCv.width=CBJ_W; cbjCv.height=CBJ_H;
 
 /* Palette des blocs */
 const CBJ_PAL={
-  heart: {fill:"#e8295a", dark:"#9b1a38"},
-  pink:  {fill:"#f472b6", dark:"#9d1f6b"},
-  amber: {fill:"#fbbf24", dark:"#92620a"},
-  teal:  {fill:"#2dd4bf", dark:"#0e7a6f"},
-  lilac: {fill:"#a78bfa", dark:"#5b21b6"},
-  coral: {fill:"#fb923c", dark:"#9a3412"},
-  gray:  {fill:"#8b9ab0", dark:"#4a566a"},
+  heart: {fill:"#ff2d6b", dark:"#a8003d", glow:"rgba(255,45,107,0.55)"},
+  pink:  {fill:"#ff6ec7", dark:"#b5157a", glow:"rgba(255,110,199,0.5)"},
+  amber: {fill:"#ffd020", dark:"#a06400", glow:"rgba(255,208,32,0.5)"},
+  teal:  {fill:"#00e8c8", dark:"#007a6a", glow:"rgba(0,232,200,0.5)"},
+  lilac: {fill:"#c084fc", dark:"#6b21c8", glow:"rgba(192,132,252,0.5)"},
+  coral: {fill:"#ff7040", dark:"#b02800", glow:"rgba(255,112,64,0.5)"},
+  gray:  {fill:"#8b9ab0", dark:"#4a566a", glow:"rgba(139,154,176,0.2)"},
 };
 
 /*
@@ -889,33 +889,63 @@ function cbjExitCenter(e){
 }
 
 function cbjDrawExits(){
-  const ES=CBJ_CELL*0.34;
+  const ES=CBJ_CELL*0.38; // un peu plus grand
   for(const e of cbjExits){
     const pal=CBJ_PAL[e.id]||CBJ_PAL.gray;
     const {x,y}=cbjExitCenter(e);
-    /* Cercle fond */
+    const isGray=e.id==="gray";
+
     cbjCtx.save();
+
+    if(!isGray){
+      /* Halo pulsé autour de la sortie */
+      cbjCtx.beginPath(); cbjCtx.arc(x,y,ES*1.55,0,Math.PI*2);
+      cbjCtx.fillStyle=pal.fill.replace(")",",0.18)").replace("rgb","rgba").replace("#","");
+      // simple alpha ring
+      cbjCtx.globalAlpha=0.22;
+      cbjCtx.fillStyle=pal.fill;
+      cbjCtx.fill();
+      cbjCtx.globalAlpha=1;
+
+      /* Anneau extérieur coloré */
+      cbjCtx.beginPath(); cbjCtx.arc(x,y,ES*1.2,0,Math.PI*2);
+      cbjCtx.strokeStyle=pal.fill;
+      cbjCtx.lineWidth=2.5;
+      cbjCtx.globalAlpha=0.45;
+      cbjCtx.stroke();
+      cbjCtx.globalAlpha=1;
+    }
+
+    /* Cercle principal */
+    cbjCtx.shadowColor=isGray?"transparent":(pal.glow||pal.fill);
+    cbjCtx.shadowBlur=e.done?18:10;
     cbjCtx.beginPath(); cbjCtx.arc(x,y,ES,0,Math.PI*2);
-    cbjCtx.fillStyle=e.done?pal.fill:"#22223a"; cbjCtx.fill();
-    cbjCtx.strokeStyle=pal.fill; cbjCtx.lineWidth=3; cbjCtx.stroke();
-    cbjCtx.restore();
+    cbjCtx.fillStyle=e.done?pal.fill:"#1a1a3a"; cbjCtx.fill();
+    cbjCtx.strokeStyle=pal.fill; cbjCtx.lineWidth=e.done?3.5:2.5; cbjCtx.stroke();
+    cbjCtx.shadowBlur=0;
+
     /* Contenu */
     if(e.done){
-      cbjHeart(x,y,ES*1.8,"rgba(255,255,255,0.92)");
+      /* Cœur blanc qui remplit la sortie */
+      cbjHeart(x,y,ES*2,"rgba(255,255,255,0.95)");
     } else {
-      cbjCtx.save();
-      cbjCtx.fillStyle=pal.fill;
-      cbjCtx.font=`bold ${Math.round(ES*1.1)}px sans-serif`;
+      /* Flèche + mini cœur coloré en dessous */
+      cbjCtx.fillStyle="white";
+      cbjCtx.font=`bold ${Math.round(ES*1.0)}px sans-serif`;
       cbjCtx.textAlign="center"; cbjCtx.textBaseline="middle";
-      cbjCtx.fillText({R:"→",L:"←",T:"↑",B:"↓"}[e.side],x,y+1);
-      cbjCtx.restore();
+      cbjCtx.fillText({R:"→",L:"←",T:"↑",B:"↓"}[e.side],x,y-ES*0.15);
+      /* Petit cœur coloré */
+      if(!isGray) cbjHeart(x,y+ES*0.52,ES*0.9,pal.fill,0.9);
     }
+
+    cbjCtx.restore();
   }
 }
 
 function cbjDrawBlock(b){
   if(b.escaped) return;
   const pal=CBJ_PAL[b.id]||CBJ_PAL.gray;
+  const isGray=b.id==="gray";
   const isSel=cbjSel&&cbjSel===b;
   const bw=b.dir==="H"?b.len*CBJ_CELL-CBJ_PAD*2:CBJ_CELL-CBJ_PAD*2;
   const bh=b.dir==="V"?b.len*CBJ_CELL-CBJ_PAD*2:CBJ_CELL-CBJ_PAD*2;
@@ -923,28 +953,52 @@ function cbjDrawBlock(b){
   const cx=bx+bw/2, cy=by+bh/2;
 
   cbjCtx.save();
-  if(isSel){ cbjCtx.shadowColor="rgba(255,255,255,0.3)"; cbjCtx.shadowBlur=14; }
 
-  /* Corps */
-  cbjRR(bx,by,bw,bh,10,pal.fill,isSel?"rgba(255,255,255,0.8)":pal.dark,isSel?2.5:1.5);
+  /* Glow coloré autour des blocs non-gris */
+  if(!isGray){
+    cbjCtx.shadowColor=pal.glow||pal.fill;
+    cbjCtx.shadowBlur=isSel?22:12;
+  } else if(isSel){
+    cbjCtx.shadowColor="rgba(255,255,255,0.25)";
+    cbjCtx.shadowBlur=10;
+  }
 
-  /* Watermark cœur */
-  cbjHeart(cx,cy,Math.min(bw,bh)*0.52,"rgba(255,255,255,1)",0.15);
+  /* Corps avec dégradé lumineux */
+  const grad=cbjCtx.createLinearGradient(bx,by,bx,by+bh);
+  grad.addColorStop(0, lighten(pal.fill,40));
+  grad.addColorStop(0.5, pal.fill);
+  grad.addColorStop(1, pal.dark);
+  cbjRR(bx,by,bw,bh,10,grad,isSel?"rgba(255,255,255,0.9)":pal.dark,isSel?3:1.5);
 
-  /* Highlight */
+  /* Watermark cœur — plus visible sur les blocs colorés */
+  const heartAlpha = isGray ? 0.1 : 0.28;
+  cbjHeart(cx,cy,Math.min(bw,bh)*0.55,"rgba(255,255,255,1)",heartAlpha);
+
+  /* Highlight supérieur brillant */
   cbjCtx.save();
-  cbjCtx.rect(bx,by,bw,bh/2); cbjCtx.clip();
-  cbjRR(bx,by,bw,bh,10,"rgba(255,255,255,0.13)",null);
+  cbjCtx.beginPath();
+  cbjCtx.rect(bx,by,bw,bh*0.45); cbjCtx.clip();
+  cbjRR(bx,by,bw,bh,10,"rgba(255,255,255,0.22)",null);
   cbjCtx.restore();
 
   /* Grip */
-  cbjCtx.strokeStyle="rgba(255,255,255,0.45)"; cbjCtx.lineWidth=1.8;
+  cbjCtx.shadowBlur=0;
+  cbjCtx.strokeStyle="rgba(255,255,255,0.55)"; cbjCtx.lineWidth=2;
   if(b.dir==="H"){
     [-8,0,8].forEach(dx=>{ cbjCtx.beginPath(); cbjCtx.moveTo(cx+dx,cy-5); cbjCtx.lineTo(cx+dx,cy+5); cbjCtx.stroke(); });
   } else {
     [-8,0,8].forEach(dy=>{ cbjCtx.beginPath(); cbjCtx.moveTo(cx-5,cy+dy); cbjCtx.lineTo(cx+5,cy+dy); cbjCtx.stroke(); });
   }
   cbjCtx.restore();
+}
+
+/* Éclaircit une couleur hex de n% */
+function lighten(hex,pct){
+  const n=parseInt(hex.replace("#",""),16);
+  const r=Math.min(255,((n>>16)&0xff)+pct);
+  const g=Math.min(255,((n>>8)&0xff)+pct);
+  const b=Math.min(255,(n&0xff)+pct);
+  return `rgb(${r},${g},${b})`;
 }
 
 function cbjDraw(){
