@@ -334,6 +334,56 @@ body {
 #revealSlides img { min-width:100%; height:100%; object-fit:cover; flex-shrink:0; }
 #revealDots { display:flex; justify-content:center; gap:8px; opacity:0; transition:opacity 1s ease; }
 
+/* ===== REVEAL MDP ===== */
+#revealStep1 {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 28px; width: 100%; max-width: 600px;
+}
+#revealMdpBtn {
+  padding: 14px 32px; font-size: 1rem; border-radius: 50px;
+  border: 1px solid var(--glass-border); background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(10px); color: white; font-family: Georgia, serif;
+  cursor: pointer; transition: background 0.2s, transform 0.15s;
+}
+#revealMdpBtn:hover { background: rgba(255,255,255,0.38); transform: translateY(-2px); }
+
+#revealStep2 {
+  display: flex; justify-content: center; align-items: center;
+  width: 100%;
+}
+.mdp-box {
+  background: var(--cream); color: var(--text-dark);
+  border-radius: 24px; padding: 44px 40px; text-align: center;
+  max-width: 340px; width: 90%;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.4), 0 2px 0 #e8c8d5;
+  animation: fadeSlideIn 0.6s ease both;
+}
+.mdp-emoji { font-size: 3rem; margin-bottom: 18px; }
+.mdp-label { font-size: 1.05rem; line-height: 1.7; color: var(--text-dark); margin-bottom: 22px; }
+.mdp-box input {
+  width: 100%; padding: 13px 18px; border-radius: 50px;
+  border: 1.5px solid rgba(255,100,150,0.3); font-size: 1rem;
+  font-family: Georgia, serif; text-align: center;
+  background: #fff8f0; color: var(--text-dark); outline: none;
+  letter-spacing: 0.08em; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.mdp-box input:focus {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 3px rgba(255,79,129,0.2);
+}
+.mdp-valider {
+  margin-top: 16px; width: 100%; padding: 13px; border-radius: 50px;
+  border: none; background: var(--rose); color: white;
+  font-family: Georgia, serif; font-size: 1rem; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(255,79,129,0.35);
+}
+.mdp-valider:hover { background: #d63060; transform: translateY(-1px); }
+#mdpErreur {
+  margin-top: 14px; font-size: 0.9rem; color: var(--rose);
+  animation: fadeSlideIn 0.4s ease both;
+}
+
 /* ===== CONFETTIS ===== */
 .confetti-piece {
   position: fixed; top: -20px; width: 10px; height: 10px; border-radius: 2px;
@@ -426,8 +476,8 @@ body {
       <input id="q1" placeholder="Ta réponse…" autocomplete="off">
     </div>
     <div class="quiz-block" id="step2" style="display:none;">
-      <p>Gaëtan à vraiment pécho et fais le premier pas avec Laëtitia ??</p>
-      <input id="q2" placeholder="Ex : honnêteté " autocomplete="off">
+      <p>Date de notre premier bisou ?</p>
+      <input id="q2" placeholder="Ex : 22 juin" autocomplete="off">
     </div>
     <br>
     <button class="quiz-btn" onclick="checkQuiz()">Valider ✓</button>
@@ -477,23 +527,44 @@ body {
 
 <!-- REVEAL FINAL -->
 <div id="reveal">
-  <div id="revealText">
-    ❤️ Mon Chaton ❤️<br><br>
-    Tu as réussi toutes les épreuves.<br><br>
-    🎁 Regarde près du lit 🎁
-  </div>
-  <div id="revealCarousel">
-    <div id="revealSlides">
-      <img src="photo1.jpg" alt="Souvenir 1">
-      <img src="photo2.jpg" alt="Souvenir 2">
-      <img src="photo3.jpg" alt="Souvenir 3">
-      <img src="photo4.jpg" alt="Souvenir 4">
-      <img src="photo5.jpg" alt="Souvenir 5">
+
+  <!-- Étape 1 : indice vers le lit -->
+  <div id="revealStep1">
+    <div id="revealText">
+      ❤️ Mon Chaton ❤️<br><br>
+      Tu as réussi toutes les épreuves.<br><br>
+      🎁 Va regarder près du lit… 🎁
     </div>
-    <button class="carousel-btn prev" onclick="revealCarouselMove(-1)">&#8249;</button>
-    <button class="carousel-btn next" onclick="revealCarouselMove(1)">&#8250;</button>
+    <div id="revealCarousel">
+      <div id="revealSlides">
+        <img src="photo1.jpg" alt="Souvenir 1">
+        <img src="photo2.jpg" alt="Souvenir 2">
+        <img src="photo3.jpg" alt="Souvenir 3">
+        <img src="photo4.jpg" alt="Souvenir 4">
+        <img src="photo5.jpg" alt="Souvenir 5">
+      </div>
+      <button class="carousel-btn prev" onclick="revealCarouselMove(-1)">&#8249;</button>
+      <button class="carousel-btn next" onclick="revealCarouselMove(1)">&#8250;</button>
+    </div>
+    <div id="revealDots"></div>
+    <button id="revealMdpBtn" onclick="afficherMdp()">
+      J'ai trouvé le mot de passe 🔑
+    </button>
   </div>
-  <div id="revealDots"></div>
+
+  <!-- Étape 2 : saisie du mot de passe -->
+  <div id="revealStep2" style="display:none;">
+    <div class="mdp-box">
+      <div class="mdp-emoji">🔐</div>
+      <p class="mdp-label">Entre le mot de passe<br>que tu as trouvé ❤️</p>
+      <input id="mdpInput" type="text" placeholder="Mot de passe…"
+             autocomplete="off" autocorrect="off" spellcheck="false"
+             onkeydown="if(event.key==='Enter') validerMdp()">
+      <button class="mdp-valider" onclick="validerMdp()">Ouvrir ✨</button>
+      <div id="mdpErreur" style="display:none;">Essaie encore mon Chaton 💕</div>
+    </div>
+  </div>
+
 </div>
 
 <audio id="music" loop>
@@ -682,7 +753,7 @@ function checkPuzzle(){
    QUIZ
 ========================================================== */
 const repQ1=["parc","parc d'éole","parc deole","parc d eole","éole","eole","parc d'eole"];
-const repQ2=["oui","yes","ouais"];
+const repQ2=["22 juin","22/06","22/06/2023","le 22 juin","22 juin 2023"];
 
 function checkQuiz(){
   const s1=document.getElementById("step1"), s2=document.getElementById("step2");
@@ -702,7 +773,7 @@ function checkQuiz(){
       allerA(document.getElementById("cbj-screen"), false);
       cbjInit();
     },1800);
-  } else { showToast("Pense à ce fameux moment en 2 temps ❤️"); }
+  } else { showToast("Pense à cette date spéciale ❤️"); }
 }
 
 /* ==========================================================
@@ -1140,6 +1211,33 @@ function lancerReveal(){
     const dots=document.getElementById("revealDots"); dots.style.opacity="1";
   },900);
   lancerConfettis(); setTimeout(lancerConfettis,1400);
+}
+
+/* ==========================================================
+   REVEAL MDP
+========================================================== */
+const MOT_DE_PASSE = "chaton"; // ← Change ici le mot de passe !
+
+function afficherMdp(){
+  document.getElementById("revealStep1").style.display="none";
+  const s2=document.getElementById("revealStep2");
+  s2.style.display="flex";
+  setTimeout(()=>document.getElementById("mdpInput").focus(),300);
+}
+
+function validerMdp(){
+  const val=document.getElementById("mdpInput").value.toLowerCase().trim();
+  if(val===MOT_DE_PASSE.toLowerCase()){
+    // Redirige vers le bocal !
+    lancerConfettis();
+    setTimeout(()=>{ window.location.href="bocal.html?ok=1"; },1000);
+  } else {
+    const err=document.getElementById("mdpErreur");
+    err.style.display="block";
+    document.getElementById("mdpInput").value="";
+    document.getElementById("mdpInput").style.borderColor="#ff4f81";
+    setTimeout(()=>{ document.getElementById("mdpInput").style.borderColor=""; },1500);
+  }
 }
 
 /* ==========================================================
